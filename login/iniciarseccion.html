@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <script>
+<script>
 async function iniciarSesion() {
   const correo = document.getElementById("correo").value;
   const contrasena = document.getElementById("contrasena").value;
@@ -36,7 +36,7 @@ async function iniciarSesion() {
   }
 
   try {
-    fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/login", {
+    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correo, contraseña: contrasena })
@@ -63,8 +63,8 @@ async function iniciarSesion() {
     alert("❌ Error al conectar con el servidor");
   }
 }
+</script>
 
-  </script>
 
 </body>
 </html>

@@ -1,0 +1,184 @@
++<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Recursos360</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="main-container">
+    <img src="../img/logo.png" alt="Logo" style="width: 80%; max-width: 300px;">
+    <h2>Selecciona tipo de usuario</h2>
+    <div class="toggle-container">
+      <button class="btn-toggle" id="btnAlumno" onclick="mostrarFormulario('alumno')">Alumno</button>
+      <button class="btn-toggle" id="btnAdmin" onclick="mostrarFormulario('admin')">Administrador</button>
+    </div>
+
+    <!-- Formulario Alumno -->
+    <div id="form-alumno" class="form-container">
+      <h3>Registro Alumno</h3>
+      <input type="text" id="nombre-alumno" placeholder="Nombre">
+      <input type="email" placeholder="Correo">
+      <input type="password" id="contrasena-alumno" placeholder="Contraseña">
+      <select id="grado">
+        <option value="">Selecciona un grado</option>
+        <option value="1ro">1°</option>
+        <option value="2do">2°</option>
+        <option value="3ro">3°</option>
+      </select>
+
+      <label>Foto de perfil (opcional):</label>
+      <input type="file" accept="image/*" id="foto-alumno">
+      <img id="preview-alumno" class="preview-img">
+
+      <div class="checkbox-container">
+        <label class="checkbox-label">
+          <input type="checkbox" id="terminos-alumno">
+          Aceptar términos
+        </label>
+      </div>
+
+      <div>
+             <button class="btn-submit" onclick="registrarDesdeFormularioAlumno()">Registrarse</button>
+     </div>
+    </div>
+
+    <!-- Formulario Administrador -->
+    <div id="form-admin" class="form-container">
+      <h3>Registro Administrador</h3>
+      <input type="text" id="nombre-admin" placeholder="Nombre">
+      <input type="email" id="correo-admin" placeholder="Correo">
+      <input type="text" id="matricula-admin" placeholder="Matrícula">
+      <div id="matricula-error" class="error">Matrícula no válida</div>
+      <input type="password" id="contrasena-admin" placeholder="Contraseña">
+
+      <label>Foto de perfil (opcional):</label>
+      <input type="file" accept="image/*" id="foto-admin">
+      <img id="preview-admin" class="preview-img">
+
+      <div class="checkbox-container">
+        <label class="checkbox-label">
+          <input type="checkbox" id="terminos-admin">
+          Aceptar términos
+        </label>
+      </div>
+
+      <div>
+        <button class="btn-submit" onclick="validarMatricula()">Registrarse</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function mostrarFormulario(tipo) {
+      document.getElementById('form-alumno').style.display = 'none';
+      document.getElementById('form-admin').style.display = 'none';
+
+      document.getElementById('btnAlumno').classList.remove("active");
+      document.getElementById('btnAdmin').classList.remove("active");
+
+      if (tipo === 'alumno') {
+        document.getElementById('form-alumno').style.display = 'block';
+        document.getElementById('btnAlumno').classList.add("active");
+      } else if (tipo === 'admin') {
+        document.getElementById('form-admin').style.display = 'block';
+        document.getElementById('btnAdmin').classList.add("active");
+      }
+    }
+
+    const fotoAlumno = document.getElementById("foto-alumno");
+    const previewAlumno = document.getElementById("preview-alumno");
+    fotoAlumno.addEventListener("change", () => {
+      const file = fotoAlumno.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          previewAlumno.src = e.target.result;
+          previewAlumno.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    const fotoAdmin = document.getElementById("foto-admin");
+    const previewAdmin = document.getElementById("preview-admin");
+    fotoAdmin.addEventListener("change", () => {
+      const file = fotoAdmin.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          previewAdmin.src = e.target.result;
+          previewAdmin.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+   function validarMatricula() {
+  const nombre = document.getElementById("nombre-admin").value.trim();
+  const matricula = document.getElementById("matricula-admin").value.trim();
+  const correo = document.getElementById("correo-admin").value.trim();
+  const contraseña = document.getElementById("contrasena-admin").value.trim();
+  const errorMsg = document.getElementById("matricula-error");
+
+  const matriculasValidas = ["ADM001", "ADM002", "ADM003"];
+
+  if (matriculasValidas.includes(matricula)) {
+    errorMsg.style.display = "none";
+
+    // Envía el registro
+    registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña);
+
+  } else {
+    errorMsg.style.display = "block";
+  }
+}
+
+
+   </script>
+<script src="callrestapi.js"></script>
+<script>
+function registrarDesdeFormularioAlumno() {
+  const nombre = document.getElementById("nombre-alumno").value.trim();
+  const contraseña = document.getElementById("contrasena-alumno").value.trim();
+
+  if (!nombre || !contraseña) {
+    alert("Por favor, completa nombre y contraseña.");
+    return;
+  }
+
+  registrarAlumno(nombre, contraseña);
+}
+
+function registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña) {
+  fetch("http://localhost:3000/api/usuarios/admin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre, matricula, correo, contraseña })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.error) {
+      alert("❌ " + data.error);
+    } else {
+      alert("✅ Administrador registrado correctamente. Redirigiendo al login...");
+      window.location.href = "../login/iniciarseccion.html";  // Redirige tras registro
+    }
+console.log("Valores enviados:", { nombre, matricula, correo, contraseña });
+
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("❌ Error al registrar administrador");
+  });
+}
+
+
+</script>
+
+</body>
+
+</html>

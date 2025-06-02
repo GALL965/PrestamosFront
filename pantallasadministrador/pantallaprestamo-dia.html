@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Préstamos-Día</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <h2>Préstamos-Día</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Hora Préstamo</th>
+          <th>Hora Entrega</th>
+          <th>Artículo</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPrestamos">
+        <tr>
+          <td>Pedro R.</td>
+          <td>27/04/2025</td>
+          <td>11:00-12:00</td>
+          <td>12:00-12:30</td>
+          <td>Balón</td>
+          <td>2</td>
+          <td><button class="btn-eliminar">Eliminar</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn-eliminar-todo" onclick="confirmarBorrado()">Borrar todo</button>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+  <script>
+    const contenedor = document.getElementById("fotoPerfil");
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    if (imagenPerfil) {
+      contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombre = localStorage.getItem("nombreAdmin");
+    if (nombre) {
+      document.getElementById("nombreAdmin").textContent = nombre;
+    }
+
+    function confirmarBorrado() {
+      if (confirm("¿Deseas borrar todos los registros del día?")) {
+        document.getElementById("tablaPrestamos").innerHTML = "";
+      }
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+  </script>
+</body>
+
+</html>

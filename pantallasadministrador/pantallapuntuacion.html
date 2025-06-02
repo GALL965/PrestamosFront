@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puntuación Estudiantes</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+    <div class="usuario-ayuda">
+      <div class="ayuda" onclick="toggleMensaje()">?</div>
+      <div class="usuario">
+        <div class="foto-perfil" id="fotoPerfil"></div>
+        <span id="nombreAdmin">Administrador</span>
+      </div>
+    </div>
+    <div id="mensajeAyuda" class="mensaje-ayuda">
+      Evalúa a los estudiantes según la devolución en tiempo y forma del material prestado
+    </div>
+
+    <h2>Puntuación Estudiantes</h2>
+
+    <input type="text" id="nombreEstudiante" placeholder="Nombre del estudiante">
+    <select id="puntuacion">
+      <option value="1">1 estrella</option>
+      <option value="2">2 estrellas</option>
+      <option value="3">3 estrellas</option>
+      <option value="4">4 estrellas</option>
+      <option value="5">5 estrellas</option>
+    </select>
+    <input type="text" id="observaciones" placeholder="Observaciones">
+
+    <button class="btn-pequeno" onclick="agregarPuntuacion()">Agregar</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Puntuación</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPuntuaciones"></tbody>
+    </table>
+
+    <button class="btn-pequeno" style="background-color:red;" onclick="eliminarTodo()">Eliminar Todo</button>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()">
+    </div>
+  </div>
+
+  <script>
+    const fotoPerfil = document.getElementById("fotoPerfil");
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    if (imagenPerfil) {
+      fotoPerfil.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombre = localStorage.getItem("nombreAdmin");
+    if (nombre) {
+      document.getElementById("nombreAdmin").textContent = nombre;
+    }
+
+    let puntuaciones = [];
+
+    function toggleMensaje() {
+      const mensaje = document.getElementById("mensajeAyuda");
+      mensaje.style.display = mensaje.style.display === "block" ? "none" : "block";
+    }
+
+    function agregarPuntuacion() {
+      const nombre = document.getElementById("nombreEstudiante").value;
+      const puntuacion = document.getElementById("puntuacion").value;
+      const observaciones = document.getElementById("observaciones").value;
+
+      if (nombre && puntuacion) {
+        puntuaciones.push({ nombre, puntuacion, observaciones });
+        document.getElementById("nombreEstudiante").value = "";
+        document.getElementById("observaciones").value = "";
+        actualizarTabla();
+      }
+    }
+
+    function actualizarTabla() {
+      const tbody = document.getElementById("tablaPuntuaciones");
+      tbody.innerHTML = "";
+      puntuaciones.forEach((item, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${item.nombre}</td>
+          <td>${'⭐'.repeat(item.puntuacion)}</td>
+          <td>${item.observaciones}</td>
+          <td><button class="btn-eliminar" onclick="eliminarPuntuacion(${index})">Eliminar</button></td>
+        `;
+        tbody.appendChild(fila);
+      });
+    }
+
+    function eliminarPuntuacion(index) {
+      puntuaciones.splice(index, 1);
+      actualizarTabla();
+    }
+
+    function eliminarTodo() {
+      if (confirm("¿Estás seguro de eliminar todas las puntuaciones?")) {
+        puntuaciones = [];
+        actualizarTabla();
+      }
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+  </script>
+</body>
+
+</html>

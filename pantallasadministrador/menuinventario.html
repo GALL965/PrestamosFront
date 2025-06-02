@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menú Artículos</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <div class="opciones">
+      <div class="opcion" onclick="location.href='../pantallasadministrador/pantallaarticulos.html'">Agregar Artículo
+      </div>
+      <div class="opcion" onclick="location.href='../pantallasadministrador/pantallaregistrosdearticulos.html'">
+        Artículos Registrados</div>
+    </div>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+  <script>
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    const contenedor = document.getElementById("fotoPerfil");
+    if (imagenPerfil) {
+      contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombreGuardado = localStorage.getItem("nombreAdmin");
+    if (nombreGuardado) {
+      document.getElementById("nombreAdmin").textContent = nombreGuardado;
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+  </script>
+</body>
+
+</html>

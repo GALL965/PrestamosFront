@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artículos Registrados</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <h2>Artículos Registrados</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaArticulos">
+        <!-- Se llena dinámicamente -->
+      </tbody>
+    </table>
+
+    <button class="btn-eliminar-todo" onclick="eliminarTodo()">Eliminar Todo</button>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+<script>
+  const backendUrl = "http://localhost:3000/api/articulos"; // cambia si usas otro puerto
+
+  async function cargarTabla() {
+    const tabla = document.getElementById("tablaArticulos");
+    tabla.innerHTML = ""; // limpia la tabla
+
+    try {
+      const res = await fetch(backendUrl);
+      const articulos = await res.json();
+
+      if (!Array.isArray(articulos)) {
+        console.error("Respuesta no esperada:", articulos);
+        return;
+      }
+
+      articulos.forEach((item) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${item.categoria}</td>
+          <td>${item.nombre}</td>
+          <td>${item.cantidad}</td>
+         <td><button class="btn-eliminar" onclick="eliminarUno(${item.id_articulo})">Eliminar</button></td>
+        `;
+        tabla.appendChild(fila);
+      });
+    } catch (error) {
+      console.error("Error al cargar artículos:", error);
+    }
+  }
+
+  async function eliminarUno(id) {
+    if (!confirm("¿Eliminar este artículo?")) return;
+
+    try {
+      const res = await fetch(`${backendUrl}/${id}`, { method: "DELETE" });
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("Eliminado:", data);
+        await cargarTabla(); // actualiza tabla después de eliminar
+      } else {
+        console.error("Error al eliminar:", data);
+      }
+    } catch (error) {
+      console.error("Error de red al eliminar artículo:", error);
+    }
+  }
+
+  async function eliminarTodo() {
+    if (!confirm("¿Eliminar TODOS los artículos?")) return;
+
+    try {
+      await fetch(backendUrl, { method: "DELETE" });
+      await cargarTabla();
+    } catch (error) {
+      console.error("Error al eliminar todos los artículos:", error);
+    }
+  }
+
+  function irAlInicio() {
+    window.location.href = "menuadministrador.html"; // ajusta si tu inicio es otro
+  }
+
+  // Mostrar foto y nombre del admin desde localStorage
+  const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+  const contenedor = document.getElementById("fotoPerfil");
+  if (imagenPerfil) {
+    contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+  }
+
+  const nombre = localStorage.getItem("nombreAdmin");
+  if (nombre) {
+    document.getElementById("nombreAdmin").textContent = nombre;
+  }
+
+  // Inicializar tabla
+  cargarTabla();
+</script>
+
+
+</body>
+
+</html>

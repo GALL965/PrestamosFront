@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agregar Préstamo</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <h2>Agregar Préstamo</h2>
+
+    <div class="buscador">
+      <input type="text" id="buscarAlumno" placeholder="Buscar alumno...">
+    </div>
+
+    <select id="categoria">
+      <option value="Academico">Académico</option>
+      <option value="Artistico">Artístico</option>
+      <option value="Deportivo">Deportivo</option>
+    </select>
+    <input type="text" id="nombreArticulo" placeholder="Buscar artículo...">
+    <input type="number" id="cantidad" placeholder="Cantidad">
+    <input type="date" id="fecha">
+    <input type="text" id="horaInicio" placeholder="Horario de préstamo">
+    <input type="text" id="horaFin" placeholder="Horario de devolución">
+
+    <button class="btn-agregar" onclick="agregarPrestamo()">Agregar</button>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+  <script>
+    const fotoPerfil = document.getElementById("fotoPerfil");
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    if (imagenPerfil) {
+      fotoPerfil.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombre = localStorage.getItem("nombreAdmin");
+    if (nombre) {
+      document.getElementById("nombreAdmin").textContent = nombre;
+    }
+
+    function agregarPrestamo() {
+      const alumno = document.getElementById("buscarAlumno").value;
+      const categoria = document.getElementById("categoria").value;
+      const articulo = document.getElementById("nombreArticulo").value;
+      const cantidad = document.getElementById("cantidad").value;
+      const fecha = document.getElementById("fecha").value;
+      const horaInicio = document.getElementById("horaInicio").value;
+      const horaFin = document.getElementById("horaFin").value;
+
+      if (alumno && categoria && articulo && cantidad && fecha && horaInicio && horaFin) {
+        alert("Préstamo agregado correctamente.");
+        document.getElementById("buscarAlumno").value = "";
+        document.getElementById("categoria").value = "Academico";
+        document.getElementById("nombreArticulo").value = "";
+        document.getElementById("cantidad").value = "";
+        document.getElementById("fecha").value = "";
+        document.getElementById("horaInicio").value = "";
+        document.getElementById("horaFin").value = "";
+      } else {
+        alert("Por favor completa todos los campos.");
+      }
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+  </script>
+</body>
+
+</html>

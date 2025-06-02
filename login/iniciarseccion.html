@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+
+  <img src="../img/logo.png" alt="Logo" class="logo">
+
+  <div class="login-container">
+    <input type="email" id="correo" placeholder="Ingresa tu Correo" class="login-input">
+    <input type="password" id="contrasena" placeholder="Ingresa tu Contraseña" class="login-input">
+
+    <!-- Botón de Iniciar Sesión -->
+    <button class="login-button" onclick="iniciarSesion()">Iniciar sesión</button>
+
+    <div class="login-text">
+      <p>¿No tienes una cuenta?
+        <a href="../login/login.html" class="login-link">Regístrate</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+async function iniciarSesion() {
+  const correo = document.getElementById("correo").value;
+  const contrasena = document.getElementById("contrasena").value;
+
+  if (!correo || !contrasena) {
+    alert("Por favor, completa ambos campos.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/usuarios/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo, contraseña: contrasena })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert("❌ " + data.error);
+      return;
+    }
+
+    localStorage.setItem("idUsuario", data.usuario.id_usuario);
+    localStorage.setItem("rol", data.usuario.rol);
+
+    if (data.usuario.rol === "Proveedor") {
+      window.location.href = "../pantallasadministrador/menuadministrador.html";
+    } else {
+      window.location.href = "../pantallasadministrador/pantallaprestamo-dia.html";
+    }
+
+  } catch (err) {
+    console.error("❌ Error de conexión:", err);
+    alert("❌ Error al conectar con el servidor");
+  }
+}
+
+  </script>
+
+</body>
+</html>

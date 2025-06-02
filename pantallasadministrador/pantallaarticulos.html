@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artículos</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <h2>Artículos</h2>
+
+    <select id="categoria">
+      <option value="Académicos">Académicos</option>
+      <option value="Artísticos">Artísticos</option>
+      <option value="Deportivos">Deportivos</option>
+    </select>
+
+    <input type="text" id="articulo" placeholder="Nombre del artículo" />
+    <input type="number" id="cantidad" placeholder="Cantidad" />
+
+    <button class="btn-agregar" onclick="registrarArticulo()">Agregar</button>
+    <button class="btn-actualizar" onclick="actualizarTabla()">Actualizar</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Artículo</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="tablaArticulos">
+        <!-- Filas insertadas dinámicamente -->
+      </tbody>
+    </table>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+<script>
+  if (!localStorage.getItem("idUsuario")) {
+    alert("No has iniciado sesión");
+    window.location.href = "../login/iniciarseccion.html";
+  }
+</script>
+
+
+  <script>
+    const contenedor = document.getElementById("fotoPerfil");
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    if (imagenPerfil) {
+      contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombre = localStorage.getItem("nombreAdmin");
+    if (nombre) {
+      document.getElementById("nombreAdmin").textContent = nombre;
+    }
+
+    let listaArticulos = [];
+
+    function agregarArticulo() {
+      const categoria = document.getElementById("categoria").value;
+      const articulo = document.getElementById("articulo").value;
+      const cantidad = document.getElementById("cantidad").value;
+
+      if (categoria && articulo && cantidad) {
+        listaArticulos.push({ categoria, articulo, cantidad });
+        document.getElementById("articulo").value = "";
+        document.getElementById("cantidad").value = "";
+      }
+    }
+
+    function actualizarTabla() {
+      const tbody = document.getElementById("tablaArticulos");
+      tbody.innerHTML = "";
+
+      listaArticulos.forEach((item, index) => {
+        const fila = document.createElement("tr");
+
+        const tdCategoria = document.createElement("td");
+        tdCategoria.textContent = item.categoria;
+
+        const tdArticulo = document.createElement("td");
+        tdArticulo.textContent = item.articulo;
+
+        const tdCantidad = document.createElement("td");
+        tdCantidad.textContent = item.cantidad;
+
+        const tdBoton = document.createElement("td");
+        const boton = document.createElement("button");
+        boton.className = "btn-eliminar";
+        boton.textContent = "Eliminar";
+        boton.onclick = () => eliminarArticulo(index);
+        tdBoton.appendChild(boton);
+
+        fila.appendChild(tdCategoria);
+        fila.appendChild(tdArticulo);
+        fila.appendChild(tdCantidad);
+        fila.appendChild(tdBoton);
+
+        tbody.appendChild(fila);
+      });
+    }
+
+    function eliminarArticulo(index) {
+      listaArticulos.splice(index, 1);
+      actualizarTabla();
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+  </script>
+   <script src="../callrestapi.js"></script>
+
+
+</body>
+
+</html>

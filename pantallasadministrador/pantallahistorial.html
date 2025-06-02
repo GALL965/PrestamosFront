@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="contenedor">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <h2>Historial</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Hora Préstamo</th>
+          <th>Hora Entrega</th>
+          <th>Artículo</th>
+          <th>Cantidad</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaHistorial">
+        <!-- Registros dinámicos -->
+      </tbody>
+    </table>
+
+    <button class="btn-eliminar-todo" onclick="confirmarEliminarTodo()">Eliminar Todo</button>
+
+    <div class="casita">
+      <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
+    </div>
+  </div>
+
+  <script>
+    const contenedor = document.getElementById("fotoPerfil");
+    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+    if (imagenPerfil) {
+      contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+    }
+
+    const nombre = localStorage.getItem("nombreAdmin");
+    if (nombre) {
+      document.getElementById("nombreAdmin").textContent = nombre;
+    }
+
+    let historial = [
+      { nombre: "Juan P.", fecha: "25/04", horaInicio: "08:00-09:00", horaFin: "10:00-11:00", articulo: "Balón", cantidad: 2 },
+      { nombre: "María", fecha: "25/04", horaInicio: "09:00-10:00", horaFin: "10:00-11:00", articulo: "Pinceles", cantidad: 1 },
+      { nombre: "jesus", fecha: "25/04", horaInicio: "09:00-10:00", horaFin: "10:00-11:00", articulo: "Pinceles", cantidad: 1 },
+      { nombre: "angel", fecha: "25/04", horaInicio: "09:00-10:00", horaFin: "10:00-11:00", articulo: "Pinceles", cantidad: 1 },
+      { nombre: "ricardo", fecha: "25/04", horaInicio: "09:00-10:00", horaFin: "10:00-11:00", articulo: "Pinceles", cantidad: 1 }
+    ];
+
+    function actualizarTabla() {
+      const tbody = document.getElementById("tablaHistorial");
+      tbody.innerHTML = "";
+
+      historial.forEach((item, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${item.nombre}</td>
+          <td>${item.fecha}</td>
+          <td>${item.horaInicio}</td>
+          <td>${item.horaFin}</td>
+          <td>${item.articulo}</td>
+          <td>${item.cantidad}</td>
+          <td><button class="btn-eliminar" onclick="eliminarUno(${index})">Eliminar</button></td>
+        `;
+        tbody.appendChild(fila);
+      });
+    }
+
+    function eliminarUno(index) {
+      historial.splice(index, 1);
+      actualizarTabla();
+    }
+
+    function confirmarEliminarTodo() {
+      if (confirm("¿Seguro que deseas borrar todo el historial?")) {
+        historial = [];
+        actualizarTabla();
+      }
+    }
+
+    function irAlInicio() {
+      window.location.href = "inicio.html";
+    }
+
+    actualizarTabla();
+  </script>
+</body>
+
+</html>

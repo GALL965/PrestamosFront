@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú Administrador</title>
+  <link rel="stylesheet" href="../styles.css/styles.css">
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo">
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAdmin">Administrador</span>
+    </div>
+
+    <div class="opciones">
+      <div class="opciones">
+        <a href="../login/regitrar,iniciarseccion.html" style="text-decoration: none; color: inherit;">
+          <div class="opcion">
+            <img src="../img/iconoagregar.png" alt="Registro">
+            <span>Registro</span>
+          </div>
+        </a>
+
+        <a href="../pantallasadministrador/menuinventario.html" style="text-decoration:none; color: inherit;">
+          <div class="opcion">
+            <img src="../img/iconoinventario.png" alt="Inventario">
+            <span>Inventario</span>
+          </div>
+        </a>
+
+        <a href="../pantallasadministrador/pantalladisponivilidad.html" style="text-decoration: none; color: inherit;">
+          <div class="opcion">
+            <img src="../img/iconohorario.png" alt="Horario">
+            <span>Horario</span>
+          </div>
+        </a>
+
+        <a href="../pantallasadministrador/menureporteadministrador.html"
+          style="text-decoration: none; color: inherit;">
+          <div class="opcion">
+            <img src="../img/iconoreporte.png" alt="Reporte">
+            <span>Reporte</span>
+          </div>
+        </a>
+      </div>
+
+
+      <script>
+        const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+        const contenedor = document.getElementById("fotoPerfil");
+        if (imagenPerfil) {
+          contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+        }
+      </script>
+</body>
+
+</html>

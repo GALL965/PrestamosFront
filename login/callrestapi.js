@@ -1,6 +1,8 @@
-const API_URL = "http://localhost:3000/api/usuarios";
+const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 
+// Función para registrar alumno
 async function registrarAlumno(nombre, contraseña) {
+  const API_URL = `${BASE_URL}/api/usuarios`;
   try {
     const res = await fetch(API_URL, {
       method: "POST",
@@ -25,12 +27,12 @@ async function registrarAlumno(nombre, contraseña) {
   }
 }
 
+// Generador de matrícula temporal
 function generarMatriculaTemporal() {
   return "TEMP" + Math.floor(Math.random() * 10000);
 }
 
-
-
+// Función para registrar administrador
 window.registrarAdministrador = async function () {
   const nombre = document.getElementById("nombre-admin").value.trim();
   const matricula = document.getElementById("matricula-admin").value.trim();
@@ -39,7 +41,7 @@ window.registrarAdministrador = async function () {
   console.log("📤 Enviando administrador:", nombre, matricula);
 
   try {
-    const res = await fetch("http://localhost:3000/api/usuarios/admin", {
+    const res = await fetch(`${BASE_URL}/api/usuarios/admin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre, matricula, contraseña })

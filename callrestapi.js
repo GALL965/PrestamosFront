@@ -1,9 +1,9 @@
-const API_URL = "https://prestamosback-zfcp.onrender.com/api/usuarios";
+const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 
 // Función para registrar un nuevo usuario
 async function registrarUsuario(nombre, matricula, rol, contraseña, correo) {
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${BASE_URL}/api/usuarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre, matricula, rol, contraseña, correo })
@@ -23,7 +23,7 @@ async function registrarUsuario(nombre, matricula, rol, contraseña, correo) {
 // Función para obtener lista de usuarios
 async function obtenerUsuarios() {
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(`${BASE_URL}/api/usuarios`);
     const data = await res.json();
     console.log("Usuarios:", data);
     return data;
@@ -32,7 +32,7 @@ async function obtenerUsuarios() {
   }
 }
 
-
+// Función para registrar administrador
 async function registrarAdministrador() {
   const nombre = document.getElementById("nombre-admin").value.trim();
   const matricula = document.getElementById("matricula-admin").value.trim();
@@ -42,7 +42,7 @@ async function registrarAdministrador() {
   console.log("📤 Enviando administrador:", nombre, matricula);
 
   try {
-    const res = await fetch("http://localhost:3000/api/usuarios/admin", {
+    const res = await fetch(`${BASE_URL}/api/usuarios/admin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre, matricula, contraseña, correo })
@@ -60,9 +60,7 @@ async function registrarAdministrador() {
   }
 }
 
-
-
-
+// Función para registrar artículo
 window.registrarArticulo = async function () {
   const categoria = document.getElementById("categoria").value;
   const nombre = document.getElementById("articulo").value.trim();
@@ -84,7 +82,7 @@ window.registrarArticulo = async function () {
   };
 
   try {
-    const res = await fetch("http://localhost:3000/api/articulos", {
+    const res = await fetch(`${BASE_URL}/api/articulos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -106,7 +104,7 @@ window.registrarArticulo = async function () {
   }
 };
 
-
+// Función para login administrador
 window.loginAdministrador = async function () {
   const correo = document.getElementById("correo").value.trim();
   const contrasena = document.getElementById("contrasena").value.trim();
@@ -117,7 +115,7 @@ window.loginAdministrador = async function () {
   }
 
   try {
-    const res = await fetch("http://localhost:3000/api/usuarios/login", {
+    const res = await fetch(`${BASE_URL}/api/usuarios/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correo, contrasena })
@@ -127,8 +125,7 @@ window.loginAdministrador = async function () {
     console.log("🔐 Respuesta login:", data);
 
     if (res.ok && data.rol === "administrador") {
-      // 👇 Aquí se guarda todo lo que necesitás
-      localStorage.setItem("idAdmin", data.id); // asegúrate que el backend lo mande como 'id'
+      localStorage.setItem("idAdmin", data.id);
       localStorage.setItem("nombreAdmin", data.nombre);
       localStorage.setItem("fotoPerfilAdmin", data.foto || "");
 

@@ -91,6 +91,7 @@
   </div>
 
 <script>
+   const BASE_URL = "https://prestamosback-zfcp.onrender.com";
   function toggleMensaje() {
     const mensaje = document.getElementById("mensajeAyuda");
     mensaje.style.display = mensaje.style.display === "inline" ? "none" : "inline";
@@ -129,7 +130,7 @@ const idAdmin = localStorage.getItem("idUsuario");
     });
 
     try {
-      await fetch("http://localhost:3000/api/disponibilidad", {
+        await fetch(`${BASE_URL}/api/disponibilidad`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idAdmin, datos })
@@ -147,7 +148,7 @@ const idAdmin = localStorage.getItem("idUsuario");
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/api/disponibilidad/${idAdmin}`);
+    const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
     const disponibilidad = await res.json();
 
     if (!Array.isArray(disponibilidad)) {

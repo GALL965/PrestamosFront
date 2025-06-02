@@ -154,7 +154,7 @@ function registrarDesdeFormularioAlumno() {
 }
 
 function registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña) {
-  fetch("http://localhost:3000/api/usuarios/admin", {
+    fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/admin", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ nombre, matricula, correo, contraseña })

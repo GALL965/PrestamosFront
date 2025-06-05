@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis Préstamos</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAlumno">Estudiante</span>
+    </div>
+
+    <h2>Mis Préstamos</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha</th>
+          <th>Hora Préstamo</th>
+          <th>Hora Entrega</th>
+          <th>Artículo</th>
+          <th>Cantidad</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPrestamos">
+        <tr>
+          <td>Juan P.</td>
+          <td>25/04</td>
+          <td>08:00-09:00</td>
+          <td>10:00-11:00</td>
+          <td>Balón</td>
+          <td>2</td>
+          <td>Activo</td>
+        </tr>
+        <tr>
+          <td>Juan P.</td>
+          <td>25/04</td>
+          <td>09:00-10:00</td>
+          <td>10:00-11:00</td>
+          <td>Pinceles</td>
+          <td>1</td>
+          <td>Devuelto</td>
+        </tr>
+        <tr>
+          <td>Juan P.</td>
+          <td>25/04</td>
+          <td>09:00-10:00</td>
+          <td>10:00-11:00</td>
+          <td>Pinceles</td>
+          <td>1</td>
+          <td>Devuelto</td>
+        </tr>
+        <tr>
+          <td>Juan P.</td>
+          <td>25/04</td>
+          <td>09:00-10:00</td>
+          <td>10:00-11:00</td>
+          <td>Pinceles</td>
+          <td>1</td>
+          <td>Devuelto</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="text-align: center;">
+      <button onclick="eliminarTodosLosPrestamos()" class="boton-eliminar-todo">
+        Eliminar Todo
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const contenedor = document.getElementById("fotoPerfil");
+    const alumno = {
+      nombre: "Juan P.",
+      foto: ""
+    };
+
+    if (alumno.foto) {
+      contenedor.style.backgroundImage = `url('${alumno.foto}')`;
+    }
+
+    function eliminarTodosLosPrestamos() {
+      if (!confirm("¿Estás seguro de eliminar todos tus préstamos?")) return;
+      alert("Préstamos eliminados. (Simulación)");
+      location.reload();
+    }
+  </script>
+  <div style="text-align: center; margin-top: 20px;">
+  <a href="menualumno.html">
+    <img src="../img/iconocasa.png" alt="Inicio" style="width: 40px; height: 40px;">
+  </a>
+</div>
+
+</body>
+
+</html>

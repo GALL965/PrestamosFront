@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disponibilidad Administradores</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAlumno">Estudiante</span>
+    </div>
+
+    <h2>Disponibilidad de Administradores</h2>
+
+    <label for="adminSelect">Selecciona un administrador:</label>
+    <select id="adminSelect">
+      <option value="">-- Seleccionar --</option>
+      <option value="ricardo">Ricardo Gómez</option>
+      <option value="maria">María López</option>
+    </select>
+
+    <table id="tablaDisponibilidad">
+      <thead>
+        <tr>
+          <th>Horarios</th>
+          <th>Lunes</th>
+          <th>Martes</th>
+          <th>Miércoles</th>
+          <th>Jueves</th>
+          <th>Viernes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>08:00-09:00</td>
+          <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td>10:00-11:00</td>
+          <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="menualumno.html">
+        <img src="../img/iconocasa.png" alt="Inicio" style="width: 40px; height: 40px;" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const select = document.getElementById("adminSelect");
+      const tabla = document.getElementById("tablaDisponibilidad").getElementsByTagName("tbody")[0];
+
+      const horarios = {
+        ricardo: {
+          "08:00-09:00": ["✔", "", "", "", "✔"],
+          "10:00-11:00": ["", "✔", "", "✔", ""]
+        },
+        maria: {
+          "08:00-09:00": ["", "✔", "✔", "", ""],
+          "10:00-11:00": ["", "", "", "✔", "✔"]
+        }
+      };
+
+      select.addEventListener("change", () => {
+        const admin = select.value;
+
+        if (!admin || !horarios[admin]) {
+          [...tabla.rows].forEach(row => {
+            for (let i = 1; i <= 5; i++) {
+              row.cells[i].textContent = "";
+            }
+          });
+          return;
+        }
+
+        const data = horarios[admin];
+        [...tabla.rows].forEach(row => {
+          const hora = row.cells[0].textContent;
+          const disponibles = data[hora] || ["", "", "", "", ""];
+          for (let i = 0; i < 5; i++) {
+            row.cells[i + 1].textContent = disponibles[i];
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

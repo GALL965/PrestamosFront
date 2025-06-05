@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menú Alumno</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAlumno">Estudiante</span>
+    </div>
+
+    <div class="opciones">
+      <a href="pantallaprestamo.html" style="text-decoration: none; color: inherit;">
+        <div class="opcion opcion-alumno">
+          <img src="../img/iconoinventario.png" alt="Mis préstamos" />
+          <span>Mis Préstamos</span>
+        </div>
+      </a>
+
+      <a href="pantallaarticulosolicitado.html" style="text-decoration: none; color: inherit;">
+        <div class="opcion opcion-alumno">
+          <img src="../img/iconodearticulo.png" alt="Solicitar" />
+          <span>Artículos Disponibles</span>
+        </div>
+      </a>
+
+      <a href="pantallapuntuacion.html" style="text-decoration: none; color: inherit;">
+        <div class="opcion opcion-alumno">
+          <img src="../img/iconoreporte.png" alt="Puntuación" />
+          <span>Mi Puntuación</span>
+        </div>
+      </a>
+
+      
+      <a href="pantalladisponivilidadadministrador.html" style="text-decoration: none; color: inherit;">
+        <div class="opcion opcion-alumno">
+          <img src="../img/iconohorario.png" alt="Horario" />
+          <span>Horario Admins</span>
+        </div>
+      </a>
+    </div>
+
+    <script>
+      const imagenPerfil = localStorage.getItem("fotoPerfilAlumno");
+      const contenedor = document.getElementById("fotoPerfil");
+      if (imagenPerfil) {
+        contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+      }
+    </script>
+</body>
+
+</html>

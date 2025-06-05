@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Puntuación</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAlumno">Estudiante</span>
+    </div>
+
+    <h2>Mi Puntuación</h2>
+
+    <div id="mensajeRestriccion" style="text-align: center; color: red; font-weight: bold; margin-bottom: 10px;"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Estrellas</th>
+          <th>Observación</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPuntuacion"></tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="menualumno.html">
+        <img src="../img/iconocasa.png" alt="Inicio" style="width: 40px; height: 40px;">
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+    const contenedor = document.getElementById("fotoPerfil");
+    const tabla = document.getElementById("tablaPuntuacion");
+    const mensajeRestriccion = document.getElementById("mensajeRestriccion");
+
+    if (alumno?.foto) {
+      contenedor.style.backgroundImage = `url('${alumno.foto}')`;
+    }
+
+    // Evaluaciones simuladas
+    const evaluaciones = [
+      { estrellas: 1, observacion: "No entregó a tiempo", fecha: "2025-05-27" },
+      { estrellas: 1, observacion: "Mal uso del artículo", fecha: "2025-05-29" },
+      { estrellas: 1, observacion: "Faltó a la devolución", fecha: "2025-05-30" },
+      { estrellas: 2, observacion: "Entregó tarde", fecha: "2025-05-20" },
+      { estrellas: 3, observacion: "Entregó justo", fecha: "2025-05-18" },
+      { estrellas: 4, observacion: "Buen comportamiento", fecha: "2025-05-10" }
+    ];
+
+    // Mostrar en tabla
+    tabla.innerHTML = "";
+    evaluaciones.forEach(e => {
+      tabla.innerHTML += `
+        <tr>
+          <td>${"⭐".repeat(e.estrellas)}</td>
+          <td>${e.observacion}</td>
+          <td>${e.fecha}</td>
+        </tr>
+      `;
+    });
+
+    // Verificación de restricciones
+    const hoy = new Date("2025-05-31"); // Simulado para pruebas
+    const evalsPorEstrella = [0, [], [], [], [], []];
+
+    evaluaciones.forEach(e => {
+      const fechaEval = new Date(e.fecha);
+      const diasDiferencia = (hoy - fechaEval) / (1000 * 60 * 60 * 24);
+      if (e.estrellas === 1 && diasDiferencia <= 7) evalsPorEstrella[1].push(e);
+      if (e.estrellas === 2 && diasDiferencia <= 7) evalsPorEstrella[2].push(e);
+      if (e.estrellas === 3 && diasDiferencia <= 14) evalsPorEstrella[3].push(e);
+    });
+
+    if (evalsPorEstrella[1].length >= 3) {
+      mensajeRestriccion.textContent = "🚫 No puedes solicitar artículos por 24 horas (3 evaluaciones de 1 estrella esta semana).";
+    } else if (evalsPorEstrella[2].length >= 3) {
+      mensajeRestriccion.textContent = "🚫 No puedes solicitar artículos por 24 horas (3 evaluaciones de 2 estrellas esta semana).";
+    } else if (evalsPorEstrella[3].length >= 3) {
+      mensajeRestriccion.textContent = "🚫 No puedes solicitar artículos por 24 horas (3 evaluaciones de 3 estrellas en las últimas 2 semanas).";
+    }
+  </script>
+</body>
+
+</html>

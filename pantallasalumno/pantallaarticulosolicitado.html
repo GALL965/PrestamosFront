@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitar Artículo</title>
+  <link rel="stylesheet" href="../styles.css/styles.css" />
+</head>
+
+<body>
+  <div class="menu">
+    <img src="../img/logo.png" alt="Logo" class="logo" />
+    <div class="usuario">
+      <div class="foto-perfil" id="fotoPerfil"></div>
+      <span id="nombreAlumno">Estudiante</span>
+    </div>
+
+    <h2>Artículos Disponibles</h2>
+
+    <div class="filtros">
+      <label for="adminSelect">Administrador:</label>
+      <select id="adminSelect">
+        <option value="">Seleccione</option>
+        <option value="1">Ricardo Gómez</option>
+        <option value="2">María López</option>
+        <option value="3">Luis Martínez</option>
+      </select>
+
+      <label for="categoriaSelect">Categoría:</label>
+      <select id="categoriaSelect">
+        <option value="">Todas</option>
+        <option value="Académico">Académico</option>
+        <option value="Deportivo">Deportivo</option>
+        <option value="Artístico">Artístico</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Artículo</th>
+          <th>Categoría</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="tablaArticulos"></tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="menualumno.html">
+        <img src="../img/iconocasa.png" alt="Inicio" style="width: 40px; height: 40px;">
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+    const contenedor = document.getElementById("fotoPerfil");
+
+    if (alumno?.foto) {
+      contenedor.style.backgroundImage = `url('${alumno.foto}')`;
+    }
+
+    const adminSelect = document.getElementById("adminSelect");
+    const categoriaSelect = document.getElementById("categoriaSelect");
+    const tablaArticulos = document.getElementById("tablaArticulos");
+
+    const articulosSimulados = {
+      "1": [
+        { nombre: "Microscopio", categoria: "Académico", cantidad: 3 },
+        { nombre: "Pinturas", categoria: "Artístico", cantidad: 5 }
+      ],
+      "2": [
+        { nombre: "Balón", categoria: "Deportivo", cantidad: 2 },
+        { nombre: "Regla", categoria: "Académico", cantidad: 4 }
+      ],
+      "3": [
+        { nombre: "Pinceles", categoria: "Artístico", cantidad: 6 },
+        { nombre: "Red de voleibol", categoria: "Deportivo", cantidad: 1 }
+      ]
+    };
+
+    adminSelect.addEventListener("change", cargarArticulos);
+    categoriaSelect.addEventListener("change", cargarArticulos);
+
+    function cargarArticulos() {
+      const idAdmin = adminSelect.value;
+      const categoria = categoriaSelect.value;
+
+      tablaArticulos.innerHTML = "";
+
+      if (!idAdmin) return;
+
+      const articulos = articulosSimulados[idAdmin] || [];
+
+      articulos
+        .filter(a => !categoria || a.categoria === categoria)
+        .forEach(a => {
+          tablaArticulos.innerHTML += `
+            <tr>
+              <td>${a.nombre}</td>
+              <td>${a.categoria}</td>
+              <td>${a.cantidad}</td>
+            </tr>
+          `;
+        });
+    }
+  </script>
+</body>
+
+</html>

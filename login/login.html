@@ -124,17 +124,9 @@
   const contraseña = document.getElementById("contrasena-admin").value.trim();
   const errorMsg = document.getElementById("matricula-error");
 
-  const matriculasValidas = ["ADM001", "ADM002", "ADM003"];
+errorMsg.style.display = "none";
+registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña);
 
-  if (matriculasValidas.includes(matricula)) {
-    errorMsg.style.display = "none";
-
-    // Envía el registro
-    registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña);
-
-  } else {
-    errorMsg.style.display = "block";
-  }
 }
 
 

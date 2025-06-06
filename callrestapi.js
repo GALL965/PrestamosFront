@@ -138,3 +138,38 @@ window.loginAdministrador = async function () {
     alert("❌ No se pudo conectar al servidor");
   }
 };
+
+
+window.loginAlumno = async function () {
+  const correo = document.getElementById("correo").value.trim();
+  const contrasena = document.getElementById("contrasena").value.trim();
+
+  if (!correo || !contrasena) {
+    alert("❌ Llena todos los campos");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/usuarios/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo, contrasena })
+    });
+
+    const data = await res.json();
+    console.log("🔐 Respuesta login alumno:", data);
+
+    if (res.ok && data.rol === "alumno") {
+      localStorage.setItem("idUsuario", data.id);
+      localStorage.setItem("nombreUsuario", data.nombre);
+      localStorage.setItem("fotoPerfilAlumno", data.foto || "");
+
+      window.location.href = "../pantallasalumno/menualumno.html";
+    } else {
+      alert("❌ Credenciales incorrectas o no eres alumno");
+    }
+  } catch (err) {
+    console.error("❌ Error de login alumno:", err);
+    alert("❌ No se pudo conectar al servidor");
+  }
+};

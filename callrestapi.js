@@ -1,43 +1,45 @@
 const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 
-// Función para registrar un nuevo usuario
-async function registrarUsuario(nombre, matricula, rol, contraseña, correo) {
+// 🔹 Función para registrar alumno
+async function registrarAlumno(nombre, correo, contraseña) {
+  const API_URL = `${BASE_URL}/api/usuarios`;
   try {
-    const res = await fetch(`${BASE_URL}/api/usuarios`, {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, matricula, rol, contraseña, correo })
+      body: JSON.stringify({
+        nombre: nombre,
+        correo: correo,
+        matricula: generarMatriculaTemporal(),
+        rol: "alumno",
+        contraseña: contraseña
+      })
     });
 
     const data = await res.json();
     if (res.ok) {
-      alert("✅ Usuario registrado correctamente");
+      alert("✅ Alumno registrado correctamente");
+      window.location.href = "login.html";
     } else {
-      alert("❌ Error: " + JSON.stringify(data));
+      alert("❌ Error en el registro: " + JSON.stringify(data));
     }
   } catch (err) {
-    console.error("Error en el fetch:", err);
+    alert("❌ Error de conexión al servidor");
+    console.error(err);
   }
 }
 
-// Función para obtener lista de usuarios
-async function obtenerUsuarios() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/usuarios`);
-    const data = await res.json();
-    console.log("Usuarios:", data);
-    return data;
-  } catch (err) {
-    console.error("Error al obtener usuarios:", err);
-  }
+// 🔹 Generador de matrícula temporal
+function generarMatriculaTemporal() {
+  return "TEMP" + Math.floor(Math.random() * 10000);
 }
 
-// Función para registrar administrador
-async function registrarAdministrador() {
+// 🔹 Función para registrar administrador
+window.registrarAdministrador = async function () {
   const nombre = document.getElementById("nombre-admin").value.trim();
   const matricula = document.getElementById("matricula-admin").value.trim();
-  const contraseña = document.querySelector("#form-admin input[type='password']").value.trim();
   const correo = document.getElementById("correo-admin").value.trim();
+  const contraseña = document.querySelector("#form-admin input[type='password']").value.trim();
 
   console.log("📤 Enviando administrador:", nombre, matricula);
 
@@ -45,7 +47,7 @@ async function registrarAdministrador() {
     const res = await fetch(`${BASE_URL}/api/usuarios/admin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, matricula, contraseña, correo })
+      body: JSON.stringify({ nombre, matricula, correo, contraseña })
     });
 
     const data = await res.json();
@@ -58,88 +60,9 @@ async function registrarAdministrador() {
     alert("❌ Error al conectar con el servidor.");
     console.error(err);
   }
-}
-
-// Función para registrar artículo
-window.registrarArticulo = async function () {
-  const categoria = document.getElementById("categoria").value;
-  const nombre = document.getElementById("articulo").value.trim();
-  const cantidad = parseInt(document.getElementById("cantidad").value);
-  const id_proveedor = parseInt(localStorage.getItem("idUsuario"));
-
-  console.log("INTENTO DE REGISTRO:", { categoria, nombre, cantidad, id_proveedor });
-
-  if (!categoria || !nombre || !cantidad || !id_proveedor) {
-    alert("❌ Todos los campos son obligatorios");
-    return;
-  }
-
-  const nuevoArticulo = {
-    categoria,
-    nombre,
-    cantidad,
-    id_proveedor
-  };
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/articulos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(nuevoArticulo)
-    });
-
-    const data = await res.json();
-    console.log("RESPUESTA:", data);
-
-    if (res.ok) {
-      alert("✅ Artículo registrado correctamente");
-    } else {
-      alert("❌ Error: " + data.error);
-    }
-  } catch (err) {
-    console.error("❌ Error de conexión:", err);
-    alert("❌ Error al conectar con el servidor");
-  }
 };
 
-// Función para login administrador
-window.loginAdministrador = async function () {
-  const correo = document.getElementById("correo").value.trim();
-  const contrasena = document.getElementById("contrasena").value.trim();
-
-  if (!correo || !contrasena) {
-    alert("❌ Llena todos los campos");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/usuarios/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ correo, contrasena })
-    });
-
-    const data = await res.json();
-    console.log("🔐 Respuesta login:", data);
-
-    if (res.ok && data.rol === "administrador") {
-      localStorage.setItem("idAdmin", data.id);
-      localStorage.setItem("nombreAdmin", data.nombre);
-      localStorage.setItem("fotoPerfilAdmin", data.foto || "");
-
-      window.location.href = "../pantallasadministrador/menuadministrador.html";
-    } else {
-      alert("❌ Credenciales incorrectas o no eres administrador");
-    }
-  } catch (err) {
-    console.error("❌ Error de login:", err);
-    alert("❌ No se pudo conectar al servidor");
-  }
-};
-
-
+// 🔹 Función para login de alumno
 window.loginAlumno = async function () {
   const correo = document.getElementById("correo").value.trim();
   const contrasena = document.getElementById("contrasena").value.trim();
@@ -163,13 +86,46 @@ window.loginAlumno = async function () {
       localStorage.setItem("idUsuario", data.id);
       localStorage.setItem("nombreUsuario", data.nombre);
       localStorage.setItem("fotoPerfilAlumno", data.foto || "");
-
       window.location.href = "../pantallasalumno/menualumno.html";
     } else {
       alert("❌ Credenciales incorrectas o no eres alumno");
     }
   } catch (err) {
     console.error("❌ Error de login alumno:", err);
+    alert("❌ No se pudo conectar al servidor");
+  }
+};
+
+// 🔹 Función para login de administrador
+window.loginAdministrador = async function () {
+  const correo = document.getElementById("correo").value.trim();
+  const contrasena = document.getElementById("contrasena").value.trim();
+
+  if (!correo || !contrasena) {
+    alert("❌ Llena todos los campos");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/usuarios/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo, contrasena })
+    });
+
+    const data = await res.json();
+    console.log("🔐 Respuesta login admin:", data);
+
+    if (res.ok && data.rol === "administrador") {
+      localStorage.setItem("idAdmin", data.id);
+      localStorage.setItem("nombreAdmin", data.nombre);
+      localStorage.setItem("fotoPerfilAdmin", data.foto || "");
+      window.location.href = "../pantallasadministrador/menuadministrador.html";
+    } else {
+      alert("❌ Credenciales incorrectas o no eres administrador");
+    }
+  } catch (err) {
+    console.error("❌ Error de login administrador:", err);
     alert("❌ No se pudo conectar al servidor");
   }
 };

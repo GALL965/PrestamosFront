@@ -21,7 +21,7 @@
     <div id="form-alumno" class="form-container">
       <h3>Registro Alumno</h3>
       <input type="text" id="nombre-alumno" placeholder="Nombre">
-      <input type="email" placeholder="Correo">
+      <input type="email" id="correo-alumno" placeholder="Correo">
       <input type="password" id="contrasena-alumno" placeholder="Contraseña">
       <select id="grado">
         <option value="">Selecciona un grado</option>
@@ -135,14 +135,15 @@ registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña);
 <script>
 function registrarDesdeFormularioAlumno() {
   const nombre = document.getElementById("nombre-alumno").value.trim();
+  const correo = document.getElementById("correo-alumno").value.trim();
   const contraseña = document.getElementById("contrasena-alumno").value.trim();
 
-  if (!nombre || !contraseña) {
-    alert("Por favor, completa nombre y contraseña.");
+  if (!nombre || !correo || !contraseña) {
+    alert("Por favor, completa todos los campos.");
     return;
   }
 
-  registrarAlumno(nombre, contraseña);
+  registrarAlumno(nombre, correo, contraseña);
 }
 
 function registrarAdministradorDesdeLogin(nombre, matricula, correo, contraseña) {

@@ -11,7 +11,7 @@ async function registrarAlumno(nombre, correo, contraseña) {
         nombre: nombre,
         correo: correo,
         matricula: generarMatriculaTemporal(),
-        rol: "estudiante",
+        rol: "Estudiante",
         contraseña: contraseña
       })
     });

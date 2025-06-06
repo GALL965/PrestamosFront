@@ -3,6 +3,15 @@ const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 // 🔹 Función para registrar alumno
 async function registrarAlumno(nombre, correo, contraseña) {
   const API_URL = `${BASE_URL}/api/usuarios`;
+
+console.log("📤 Enviando:", {
+  nombre,
+  correo,
+  matricula: generarMatriculaTemporal(),
+  rol: "Estudiante",
+  contraseña
+});
+
   try {
     const res = await fetch(API_URL, {
       method: "POST",

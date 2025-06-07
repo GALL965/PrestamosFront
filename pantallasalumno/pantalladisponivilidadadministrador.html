@@ -107,12 +107,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const map = new Map();
       disponibilidad.forEach(item => {
-        map.set(`${item.dia}-${item.horario}`, item.disponible);
+        map.set(`${item.dia.trim()}-${item.horario.trim()}`, item.disponible);
       });
 
       [...tabla.rows].forEach((fila, i) => {
         dias.forEach((dia, j) => {
-          const clave = `${dia}-${horarios[i]}`;
+          const clave = `${dia.trim()}-${horarios[i].trim()}`;
           const disponible = map.get(clave);
           fila.cells[j + 1].textContent = disponible ? "✔" : "";
         });

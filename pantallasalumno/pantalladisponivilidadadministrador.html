@@ -55,46 +55,85 @@
       </a>
     </div>
   </div>
+    
+<script>
+const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const select = document.getElementById("adminSelect");
-      const tabla = document.getElementById("tablaDisponibilidad").getElementsByTagName("tbody")[0];
+document.addEventListener("DOMContentLoaded", async () => {
+  const select = document.getElementById("adminSelect");
+  const tabla = document.getElementById("tablaDisponibilidad").getElementsByTagName("tbody")[0];
 
-      const horarios = {
-        ricardo: {
-          "08:00-09:00": ["✔", "", "", "", "✔"],
-          "10:00-11:00": ["", "✔", "", "✔", ""]
-        },
-        maria: {
-          "08:00-09:00": ["", "✔", "✔", "", ""],
-          "10:00-11:00": ["", "", "", "✔", "✔"]
-        }
-      };
+  // Paso 1: Cargar administradores
+  try {
+    const res = await fetch(`${BASE_URL}/api/usuarios/admins`);
+    const admins = await res.json();
 
-      select.addEventListener("change", () => {
-        const admin = select.value;
-
-        if (!admin || !horarios[admin]) {
-          [...tabla.rows].forEach(row => {
-            for (let i = 1; i <= 5; i++) {
-              row.cells[i].textContent = "";
-            }
-          });
-          return;
-        }
-
-        const data = horarios[admin];
-        [...tabla.rows].forEach(row => {
-          const hora = row.cells[0].textContent;
-          const disponibles = data[hora] || ["", "", "", "", ""];
-          for (let i = 0; i < 5; i++) {
-            row.cells[i + 1].textContent = disponibles[i];
-          }
-        });
-      });
+    admins.forEach(admin => {
+      const option = document.createElement("option");
+      option.value = admin.id;
+      option.textContent = admin.nombre;
+      select.appendChild(option);
     });
-  </script>
+  } catch (err) {
+    console.error("Error al cargar administradores:", err);
+    alert("Error al cargar administradores");
+  }
+
+  // Paso 2: Manejar selección
+  select.addEventListener("change", async () => {
+    const idAdmin = select.value;
+
+    // Limpiar tabla
+    [...tabla.rows].forEach(row => {
+      for (let i = 1; i <= 5; i++) {
+        row.cells[i].textContent = "";
+      }
+    });
+
+    if (!idAdmin) return;
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
+      const disponibilidad = await res.json();
+
+      // Mapear la disponibilidad a una estructura organizada
+      const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+      const horariosMap = {};
+
+      disponibilidad
+        .filter(d => d.disponible === 1)
+        .forEach(d => {
+          if (!horariosMap[d.horario]) {
+            horariosMap[d.horario] = { Lunes: "", Martes: "", Miércoles: "", Jueves: "", Viernes: "" };
+          }
+          horariosMap[d.horario][d.dia] = "✔";
+        });
+
+      // Reconstruir tabla
+      tabla.innerHTML = "";
+      Object.entries(horariosMap).forEach(([horario, dias]) => {
+        const fila = document.createElement("tr");
+        const celdaHorario = document.createElement("td");
+        celdaHorario.textContent = horario;
+        fila.appendChild(celdaHorario);
+
+        diasSemana.forEach(dia => {
+          const celda = document.createElement("td");
+          celda.textContent = dias[dia] || "";
+          fila.appendChild(celda);
+        });
+
+        tabla.appendChild(fila);
+      });
+
+    } catch (err) {
+      console.error("Error al cargar disponibilidad:", err);
+      alert("Error al cargar disponibilidad");
+    }
+  });
+});
+</script>
+
 </body>
 
 </html>

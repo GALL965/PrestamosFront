@@ -56,13 +56,13 @@ async function iniciarSesion() {
     localStorage.setItem("fotoPerfilAlumno", usuario.foto || "");
     localStorage.setItem("rol", usuario.rol);
 
-    if (usuario.rol === "administrador") {
-      window.location.href = "../pantallasadministrador/menuadministrador.html";
-    } else if (usuario.rol === "Estudiante") {
-      window.location.href = "../pantallasalumno/menualumno.html";
+    if (usuario.rol === "administrador" || usuario.rol === "Proveedor") {
+    window.location.href = "../pantallasadministrador/menuadministrador.html";
+    }else if (usuario.rol === "Estudiante") {
+    window.location.href = "../pantallasalumno/menualumno.html";
     } else {
-      alert("⚠️ Rol no reconocido: " + usuario.rol);
-    }
+    alert("⚠️ Rol no reconocido: " + usuario.rol);
+   }
 
   } catch (err) {
     console.error("❌ Error de conexión:", err);

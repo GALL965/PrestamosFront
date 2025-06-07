@@ -62,8 +62,10 @@ const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 document.addEventListener("DOMContentLoaded", async () => {
   const select = document.getElementById("adminSelect");
   const tabla = document.getElementById("tablaDisponibilidad").getElementsByTagName("tbody")[0];
+  const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+  const horarios = ["08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-12:30"];
 
-  // Paso 1: Cargar administradores
+  // Cargar administradores
   try {
     const res = await fetch(`${BASE_URL}/api/usuarios/admins`);
     const admins = await res.json();
@@ -79,15 +81,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     alert("Error al cargar administradores");
   }
 
-  // Paso 2: Manejar selección
+  // Al seleccionar administrador
   select.addEventListener("change", async () => {
     const idAdmin = select.value;
 
     // Limpiar tabla
-    [...tabla.rows].forEach(row => {
-      for (let i = 1; i <= 5; i++) {
-        row.cells[i].textContent = "";
+    tabla.innerHTML = "";
+    horarios.forEach(horario => {
+      const fila = document.createElement("tr");
+      const celdaHora = document.createElement("td");
+      celdaHora.textContent = horario;
+      fila.appendChild(celdaHora);
+      for (let i = 0; i < dias.length; i++) {
+        const celda = document.createElement("td");
+        fila.appendChild(celda);
       }
+      tabla.appendChild(fila);
     });
 
     if (!idAdmin) return;
@@ -96,34 +105,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
       const disponibilidad = await res.json();
 
-      // Mapear la disponibilidad a una estructura organizada
-      const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-      const horariosMap = {};
+      const map = new Map();
+      disponibilidad.forEach(item => {
+        map.set(`${item.dia}-${item.horario}`, item.disponible);
+      });
 
-      disponibilidad
-        .filter(d => d.disponible === 1)
-        .forEach(d => {
-          if (!horariosMap[d.horario]) {
-            horariosMap[d.horario] = { Lunes: "", Martes: "", Miércoles: "", Jueves: "", Viernes: "" };
-          }
-          horariosMap[d.horario][d.dia] = "✔";
+      [...tabla.rows].forEach((fila, i) => {
+        dias.forEach((dia, j) => {
+          const clave = `${dia}-${horarios[i]}`;
+          const disponible = map.get(clave);
+          fila.cells[j + 1].textContent = disponible ? "✔" : "";
         });
-
-      // Reconstruir tabla
-      tabla.innerHTML = "";
-      Object.entries(horariosMap).forEach(([horario, dias]) => {
-        const fila = document.createElement("tr");
-        const celdaHorario = document.createElement("td");
-        celdaHorario.textContent = horario;
-        fila.appendChild(celdaHorario);
-
-        diasSemana.forEach(dia => {
-          const celda = document.createElement("td");
-          celda.textContent = dias[dia] || "";
-          fila.appendChild(celda);
-        });
-
-        tabla.appendChild(fila);
       });
 
     } catch (err) {

@@ -105,21 +105,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
       const disponibilidad = await res.json();
       console.log("📦 Disponibilidad recibida:", disponibilidad);
-
-      console.log("🧩 Clave buscada:", clave, "→", map.get(clave));
-
       const map = new Map();
       disponibilidad.forEach(item => {
         map.set(`${item.dia.trim()}-${item.horario.trim()}`, item.disponible);
       });
-
-      [...tabla.rows].forEach((fila, i) => {
-        dias.forEach((dia, j) => {
-          const clave = `${dia.trim()}-${horarios[i].trim()}`;
-          const disponible = map.get(clave);
-          fila.cells[j + 1].textContent = disponible ? "✔" : "";
-        });
-      });
+    [...tabla.rows].forEach((fila, i) => {
+  dias.forEach((dia, j) => {
+    const clave = `${dia.trim()}-${horarios[i].trim()}`;
+    console.log("🧩 Clave buscada:", clave, "→", map.get(clave));
+    const disponible = map.get(clave);
+    fila.cells[j + 1].textContent = disponible ? "✔" : "";
+   });
+  });
 
     } catch (err) {
       console.error("Error al cargar disponibilidad:", err);

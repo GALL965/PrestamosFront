@@ -91,7 +91,7 @@ window.loginAlumno = async function () {
     const data = await res.json();
     console.log("🔐 Respuesta login alumno:", data);
 
-    if (res.ok && data.rol === "alumno") {
+    if (res.ok && data.rol === "Estudiante") {
       localStorage.setItem("idUsuario", data.id);
       localStorage.setItem("nombreUsuario", data.nombre);
       localStorage.setItem("fotoPerfilAlumno", data.foto || "");

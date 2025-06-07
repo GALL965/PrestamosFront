@@ -15,7 +15,6 @@
     <input type="email" id="correo" placeholder="Ingresa tu Correo" class="login-input">
     <input type="password" id="contrasena" placeholder="Ingresa tu Contraseña" class="login-input">
 
-    <!-- Botón de Iniciar Sesión -->
     <button class="login-button" onclick="iniciarSesion()">Iniciar sesión</button>
 
     <div class="login-text">
@@ -25,10 +24,11 @@
     </div>
   </div>
 
+<script src="../callrestapi.js"></script>
 <script>
 async function iniciarSesion() {
-  const correo = document.getElementById("correo").value;
-  const contrasena = document.getElementById("contrasena").value;
+  const correo = document.getElementById("correo").value.trim();
+  const contrasena = document.getElementById("contrasena").value.trim();
 
   if (!correo || !contrasena) {
     alert("Por favor, completa ambos campos.");
@@ -45,17 +45,23 @@ async function iniciarSesion() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert("❌ " + data.error);
+      alert("❌ " + (data.error || "Credenciales inválidas"));
       return;
     }
 
-    localStorage.setItem("idUsuario", data.usuario.id_usuario);
-    localStorage.setItem("rol", data.usuario.rol);
+    const usuario = data.usuario;
 
-    if (data.usuario.rol === "Proveedor") {
+    localStorage.setItem("idUsuario", usuario.id_usuario);
+    localStorage.setItem("nombreUsuario", usuario.nombre);
+    localStorage.setItem("fotoPerfilAlumno", usuario.foto || "");
+    localStorage.setItem("rol", usuario.rol);
+
+    if (usuario.rol === "administrador") {
       window.location.href = "../pantallasadministrador/menuadministrador.html";
+    } else if (usuario.rol === "Estudiante") {
+      window.location.href = "../pantallasalumno/menualumno.html";
     } else {
-      window.location.href = "../pantallasadministrador/pantallaprestamo-dia.html";
+      alert("⚠️ Rol no reconocido: " + usuario.rol);
     }
 
   } catch (err) {
@@ -64,7 +70,6 @@ async function iniciarSesion() {
   }
 }
 </script>
-
 
 </body>
 </html>

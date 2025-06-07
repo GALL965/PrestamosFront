@@ -28,7 +28,7 @@ console.log("📤 Enviando:", {
     const data = await res.json();
     if (res.ok) {
       alert("✅ Alumno registrado correctamente");
-      window.location.href = "login.html";
+      window.location.href = "iniciarseccion.html";
     } else {
       alert("❌ Error en el registro: " + JSON.stringify(data));
     }

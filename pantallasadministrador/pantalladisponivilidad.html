@@ -50,7 +50,8 @@
   </div>
 
 <script>
-   const BASE_URL = "https://prestamosback-zfcp.onrender.com";
+  const BASE_URL = "https://prestamosback-zfcp.onrender.com";
+
   function toggleMensaje() {
     const mensaje = document.getElementById("mensajeAyuda");
     mensaje.style.display = mensaje.style.display === "inline" ? "none" : "inline";
@@ -70,7 +71,7 @@
   }
 
   async function guardarDisponibilidad() {
-const idAdmin = localStorage.getItem("idUsuario");
+    const idAdmin = localStorage.getItem("idUsuario");
     const tabla = document.querySelector(".tabla-horario tbody");
     const datos = [];
 
@@ -89,7 +90,7 @@ const idAdmin = localStorage.getItem("idUsuario");
     });
 
     try {
-        await fetch(`${BASE_URL}/api/disponibilidad`, {
+      await fetch(`${BASE_URL}/api/disponibilidad`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idAdmin, datos })
@@ -99,65 +100,87 @@ const idAdmin = localStorage.getItem("idUsuario");
     }
   }
 
-async function cargarDisponibilidad() {
-const idAdmin = localStorage.getItem("idUsuario");
-  if (!idAdmin) {
-    console.error("❌ No hay idAdmin en localStorage");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
-    const disponibilidad = await res.json();
-
-    if (!Array.isArray(disponibilidad)) {
-      console.error("❌ Respuesta inválida del servidor:", disponibilidad);
+  async function cargarDisponibilidad() {
+    const idAdmin = localStorage.getItem("idUsuario");
+    if (!idAdmin) {
+      console.error("❌ No hay idAdmin en localStorage");
       return;
     }
 
-    const map = new Map();
-    disponibilidad.forEach(item => {
-      map.set(`${item.dia}-${item.horario}`, item.disponible);
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
+      const disponibilidad = await res.json();
 
-    const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-    const horarios = ["08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-12:30"];
+      if (!Array.isArray(disponibilidad)) {
+        console.error("❌ Respuesta inválida del servidor:", disponibilidad);
+        return;
+      }
 
-    const tabla = document.querySelector(".tabla-horario tbody");
-    [...tabla.rows].forEach((fila, i) => {
-      [...fila.cells].slice(1).forEach((celda, j) => {
-        const checkbox = celda.querySelector("input");
-        const clave = `${dias[j]}-${horarios[i]}`;
-        checkbox.checked = map.get(clave) || false;
-        checkbox.disabled = true;
+      const map = new Map();
+      disponibilidad.forEach(item => {
+        map.set(`${item.dia}-${item.horario}`, item.disponible);
       });
-    });
-  } catch (error) {
-    console.error("❌ Error cargando disponibilidad:", error);
+
+      const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+      const horarios = ["08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-12:30"];
+
+      const tabla = document.querySelector(".tabla-horario tbody");
+      [...tabla.rows].forEach((fila, i) => {
+        [...fila.cells].slice(1).forEach((celda, j) => {
+          const checkbox = celda.querySelector("input");
+          const clave = `${dias[j]}-${horarios[i]}`;
+          checkbox.checked = map.get(clave) || false;
+          checkbox.disabled = true;
+        });
+      });
+    } catch (error) {
+      console.error("❌ Error cargando disponibilidad:", error);
+    }
   }
-}
 
-const nombre = localStorage.getItem("nombreAdmin");
-if (nombre) {
-  document.getElementById("nombreAdmin").textContent = nombre;
-}
+  // Generar tabla base (solo una vez)
+  const tabla = document.querySelector(".tabla-horario tbody");
+  const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+  const horarios = ["08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-12:30"];
 
-const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
-if (imagenPerfil) {
-  document.getElementById("fotoPerfil").style.backgroundImage = `url('${imagenPerfil}')`;
-}
+  horarios.forEach(horario => {
+    const fila = document.createElement("tr");
+    const celdaHora = document.createElement("td");
+    celdaHora.textContent = horario;
+    fila.appendChild(celdaHora);
 
-// Validamos que exista el idAdmin antes de seguir
-const idAdmin = localStorage.getItem("idUsuario");
-if (!idAdmin) {
-  alert("⚠️ No se encontró sesión iniciada. Redirigiendo...");
-  window.location.href = "../login/iniciarseccion.html"; // o tu ruta de login
-} else {
-  cargarDisponibilidad(); // todo bien, ya puedes cargar
-}
+    dias.forEach(() => {
+      const celda = document.createElement("td");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.disabled = true;
+      celda.appendChild(checkbox);
+      fila.appendChild(celda);
+    });
 
+    tabla.appendChild(fila);
+  });
+
+  // Mostrar nombre y foto
+  const nombre = localStorage.getItem("nombreAdmin");
+  if (nombre) {
+    document.getElementById("nombreAdmin").textContent = nombre;
+  }
+
+  const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+  if (imagenPerfil) {
+    document.getElementById("fotoPerfil").style.backgroundImage = `url('${imagenPerfil}')`;
+  }
+
+  // Verificar sesión y cargar disponibilidad
+  const idAdmin = localStorage.getItem("idUsuario");
+  if (!idAdmin) {
+    alert("⚠️ No se encontró sesión iniciada. Redirigiendo...");
+    window.location.href = "../login/iniciarseccion.html";
+  } else {
+    cargarDisponibilidad();
+  }
 </script>
-
 
 </body>
 

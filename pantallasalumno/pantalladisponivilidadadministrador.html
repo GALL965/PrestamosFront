@@ -104,6 +104,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/disponibilidad/${idAdmin}`);
       const disponibilidad = await res.json();
+      console.log("📦 Disponibilidad recibida:", disponibilidad);
+
+      console.log("🧩 Clave buscada:", clave, "→", map.get(clave));
 
       const map = new Map();
       disponibilidad.forEach(item => {

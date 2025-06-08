@@ -68,12 +68,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch(`${BASE_URL}/api/usuarios/admins`);
     const admins = await res.json();
 
-    admins.forEach(admin => {
-      const option = document.createElement("option");
-      option.value = admin.id;
-      option.textContent = admin.nombre;
-      select.appendChild(option);
-    });
+   admins.forEach(admin => {
+     const option = document.createElement("option");
+     option.value = admin.id_usuario; // ✅ este sí existe y es el que devuelve la API
+    option.textContent = admin.nombre;
+    select.appendChild(option);
+   });
+
+
   } catch (err) {
     console.error("Error al cargar administradores:", err);
     alert("Error al cargar administradores");

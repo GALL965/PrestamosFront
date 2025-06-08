@@ -84,9 +84,15 @@ async function cargarArticulos() {
     if (categoria) url.searchParams.append("categoria", categoria);
 
     const res = await fetch(url);
-    const articulos = await res.json();
+    const data = await res.json();
 
-    articulos.forEach(a => {
+    console.log("Respuesta del backend:", data); // <- LOG DE DEBUG
+
+    if (!Array.isArray(data)) {
+      throw new Error("Respuesta no es un arreglo de artículos");
+    }
+
+    data.forEach(a => {
       tablaArticulos.innerHTML += `
         <tr>
           <td>${a.nombre}</td>
@@ -95,6 +101,11 @@ async function cargarArticulos() {
         </tr>
       `;
     });
+  } catch (err) {
+    console.error("Error al obtener artículos:", err);
+  }
+}
+
   } catch (err) {
     console.error("Error al obtener artículos:", err);
   }

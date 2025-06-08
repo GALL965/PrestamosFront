@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Al seleccionar administrador
   select.addEventListener("change", async () => {
     const idAdmin = select.value;
+    console.log("🧠 ID seleccionado:", idAdmin);
 
     // Limpiar tabla
     tabla.innerHTML = "";

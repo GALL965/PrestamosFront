@@ -138,3 +138,38 @@ window.loginAdministrador = async function () {
     alert("❌ No se pudo conectar al servidor");
   }
 };
+
+
+// 🔹 Función para registrar artículo desde pantalla del admin
+window.registrarArticulo = async function () {
+  const nombre = document.getElementById("articulo").value.trim();
+  const categoria = document.getElementById("categoria").value;
+  const cantidad = parseInt(document.getElementById("cantidad").value);
+  const idProveedor = localStorage.getItem("idUsuario") || localStorage.getItem("idAdmin");
+
+  if (!nombre || !categoria || !cantidad || isNaN(cantidad)) {
+    alert("❌ Todos los campos son obligatorios y válidos.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/articulos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, categoria, cantidad, id_proveedor: idProveedor })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Artículo registrado correctamente");
+      document.getElementById("articulo").value = "";
+      document.getElementById("cantidad").value = "";
+    } else {
+      alert("❌ Error en registro: " + data.error);
+    }
+  } catch (err) {
+    console.error("❌ Error en registrarArticulo:", err);
+    alert("❌ No se pudo conectar al servidor.");
+  }
+};

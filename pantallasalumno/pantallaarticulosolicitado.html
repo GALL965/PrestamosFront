@@ -22,9 +22,6 @@
       <label for="adminSelect">Administrador:</label>
       <select id="adminSelect">
         <option value="">Seleccione</option>
-        <option value="1">Ricardo Gómez</option>
-        <option value="2">María López</option>
-        <option value="3">Luis Martínez</option>
       </select>
 
       <label for="categoriaSelect">Categoría:</label>
@@ -71,46 +68,61 @@
     adminSelect.addEventListener("change", cargarArticulos);
     categoriaSelect.addEventListener("change", cargarArticulos);
 
-async function cargarArticulos() {
-  const idAdmin = adminSelect.value;
-  const categoria = categoriaSelect.value;
+    async function cargarArticulos() {
+      const idAdmin = adminSelect.value;
+      const categoria = categoriaSelect.value;
 
-  tablaArticulos.innerHTML = "";
+      tablaArticulos.innerHTML = "";
 
-  if (!idAdmin) return;
+      if (!idAdmin) return;
 
-  try {
-    const url = new URL(`${API_URL}/por-admin/${idAdmin}`);
-    if (categoria) url.searchParams.append("categoria", categoria);
+      try {
+        const url = new URL(`${API_URL}/por-admin/${idAdmin}`);
+        if (categoria) url.searchParams.append("categoria", categoria);
 
-    const res = await fetch(url);
-    const data = await res.json();
+        const res = await fetch(url);
+        const data = await res.json();
 
-    console.log("Respuesta del backend:", data); // <- LOG DE DEBUG
+        console.log("Respuesta del backend:", data);
 
-    if (!Array.isArray(data)) {
-      throw new Error("Respuesta no es un arreglo de artículos");
+        if (!Array.isArray(data)) {
+          throw new Error("Respuesta no es un arreglo de artículos");
+        }
+
+        data.forEach(a => {
+          tablaArticulos.innerHTML += `
+            <tr>
+              <td>${a.nombre}</td>
+              <td>${a.categoria}</td>
+              <td>${a.cantidad}</td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error("Error al obtener artículos:", err);
+      }
     }
 
-    data.forEach(a => {
-      tablaArticulos.innerHTML += `
-        <tr>
-          <td>${a.nombre}</td>
-          <td>${a.categoria}</td>
-          <td>${a.cantidad}</td>
-        </tr>
-      `;
-    });
-  } catch (err) {
-    console.error("Error al obtener artículos:", err);
-  }
-}
+    async function cargarAdmins() {
+      try {
+        const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/admins");
+        const admins = await res.json();
 
-  } catch (err) {
-    console.error("Error al obtener artículos:", err);
-  }
-}
+        admins.forEach(admin => {
+          const option = document.createElement("option");
+          option.value = admin.id_usuario;
+          option.textContent = admin.nombre;
+          adminSelect.appendChild(option);
+        });
+      } catch (err) {
+        console.error("Error al cargar administradores:", err);
+      }
+    }
+
+    // Ejecutar al inicio
+    cargarAdmins();
   </script>
+
 </body>
 
 </html>

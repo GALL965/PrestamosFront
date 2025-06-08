@@ -115,7 +115,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const clave = `${dia.trim()}-${horarios[i].trim()}`;
     console.log("🧩 Clave buscada:", clave, "→", map.get(clave));
     const disponible = map.get(clave);
-   fila.cells[j + 1].textContent = disponible === 1 ? "✔" : "";
+    fila.cells[j + 1].textContent = disponible === true ? "✔" : "";
+
    });
   });
 

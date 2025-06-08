@@ -66,46 +66,39 @@
     const categoriaSelect = document.getElementById("categoriaSelect");
     const tablaArticulos = document.getElementById("tablaArticulos");
 
-    const articulosSimulados = {
-      "1": [
-        { nombre: "Microscopio", categoria: "Académico", cantidad: 3 },
-        { nombre: "Pinturas", categoria: "Artístico", cantidad: 5 }
-      ],
-      "2": [
-        { nombre: "Balón", categoria: "Deportivo", cantidad: 2 },
-        { nombre: "Regla", categoria: "Académico", cantidad: 4 }
-      ],
-      "3": [
-        { nombre: "Pinceles", categoria: "Artístico", cantidad: 6 },
-        { nombre: "Red de voleibol", categoria: "Deportivo", cantidad: 1 }
-      ]
-    };
+    const API_URL = "https://prestamosback-zfcp.onrender.com/api/articulos";
 
     adminSelect.addEventListener("change", cargarArticulos);
     categoriaSelect.addEventListener("change", cargarArticulos);
 
-    function cargarArticulos() {
-      const idAdmin = adminSelect.value;
-      const categoria = categoriaSelect.value;
+async function cargarArticulos() {
+  const idAdmin = adminSelect.value;
+  const categoria = categoriaSelect.value;
 
-      tablaArticulos.innerHTML = "";
+  tablaArticulos.innerHTML = "";
 
-      if (!idAdmin) return;
+  if (!idAdmin) return;
 
-      const articulos = articulosSimulados[idAdmin] || [];
+  try {
+    const url = new URL(`${API_URL}/por-admin/${idAdmin}`);
+    if (categoria) url.searchParams.append("categoria", categoria);
 
-      articulos
-        .filter(a => !categoria || a.categoria === categoria)
-        .forEach(a => {
-          tablaArticulos.innerHTML += `
-            <tr>
-              <td>${a.nombre}</td>
-              <td>${a.categoria}</td>
-              <td>${a.cantidad}</td>
-            </tr>
-          `;
-        });
-    }
+    const res = await fetch(url);
+    const articulos = await res.json();
+
+    articulos.forEach(a => {
+      tablaArticulos.innerHTML += `
+        <tr>
+          <td>${a.nombre}</td>
+          <td>${a.categoria}</td>
+          <td>${a.cantidad}</td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error("Error al obtener artículos:", err);
+  }
+}
   </script>
 </body>
 

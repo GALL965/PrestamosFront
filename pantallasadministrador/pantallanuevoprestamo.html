@@ -31,8 +31,8 @@
      <option value="Deportivos">Deportivos</option>
      </select>
 
-    <input list="listaArticulos" id="nombreArticulo" placeholder="Buscar artículo...">
-    <datalist id="listaArticulos"></datalist>
+     <input list="listaArticulos" id="nombreArticulo" placeholder="Buscar artículo...">
+     <datalist id="listaArticulos"></datalist>
 
     <input type="number" id="cantidad" placeholder="Cantidad">
     <input type="date" id="fecha">
@@ -112,18 +112,29 @@ async function cargarArticulosLive() {
   const idAdmin = localStorage.getItem("idAdmin");
   const datalist = document.getElementById("listaArticulos");
 
+  console.log("🟢 Buscar artículo:", input, "| Categoría:", categoria, "| idAdmin:", idAdmin);
+
   datalist.innerHTML = "";
 
-  if (input.length < 2 || !categoria || !idAdmin) return;
+  if (input.length < 2 || !categoria || !idAdmin) {
+    console.log("🔴 No se cumplen condiciones mínimas");
+    return;
+  }
 
   try {
     const url = `https://prestamosback-zfcp.onrender.com/api/articulos/por-admin/${idAdmin}?categoria=${categoria}`;
+    console.log("📡 Haciendo fetch:", url);
+
     const res = await fetch(url);
     const articulos = await res.json();
+
+    console.log("📦 Artículos recibidos:", articulos);
 
     const filtrados = articulos.filter(art =>
       art.nombre.toLowerCase().startsWith(input)
     );
+
+    console.log("✅ Coincidencias:", filtrados);
 
     filtrados.forEach(art => {
       const option = document.createElement("option");
@@ -131,7 +142,7 @@ async function cargarArticulosLive() {
       datalist.appendChild(option);
     });
   } catch (err) {
-    console.error("Error al buscar artículos:", err);
+    console.error("❌ Error al buscar artículos:", err);
   }
 }
 

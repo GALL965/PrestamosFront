@@ -110,6 +110,25 @@
 
     console.log("📦 Enviando al backend:", body);
 
+
+// Validar formato HH:MM (ej: 09:00, 14:30)
+const regexHora = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+if (!regexHora.test(horaInicio) || !regexHora.test(horaFin)) {
+  alert("❌ El formato de hora debe ser HH:MM (ej. 09:00)");
+  return;
+}
+
+// Validar que horaFin sea mayor que horaInicio
+const [h1, m1] = horaInicio.split(":").map(Number);
+const [h2, m2] = horaFin.split(":").map(Number);
+
+if (h2 < h1 || (h2 === h1 && m2 <= m1)) {
+  alert("❌ La hora de devolución debe ser posterior a la de préstamo");
+  return;
+}
+
+
     const res = await fetch("https://prestamosback-zfcp.onrender.com/api/prestamos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

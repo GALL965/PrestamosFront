@@ -35,6 +35,7 @@
       <datalist id="listaArticulos"></datalist>
 
     <input type="number" id="cantidad" placeholder="Cantidad">
+    <div id="infoCantidad" style="margin-top: 5px; font-size: 0.9em; color: gray;"></div>
     <input type="date" id="fecha">
     <input type="text" id="horaInicio" placeholder="Horario de préstamo">
     <input type="text" id="horaFin" placeholder="Horario de devolución">
@@ -66,6 +67,12 @@
       const fecha = document.getElementById("fecha").value;
       const horaInicio = document.getElementById("horaInicio").value;
       const horaFin = document.getElementById("horaFin").value;
+
+       if (window.articuloSeleccionado && parseInt(cantidad) > window.articuloSeleccionado.cantidad) {
+        alert(`❌ Solo hay ${window.articuloSeleccionado.cantidad} unidades disponibles.`);
+       return;
+       } 
+
 
       if (alumno && categoria && articulo && cantidad && fecha && horaInicio && horaFin) {
         alert("Préstamo agregado correctamente.");
@@ -136,11 +143,15 @@ async function cargarArticulosLive() {
 
     console.log("✅ Coincidencias:", filtrados);
 
-    filtrados.forEach(art => {
-      const option = document.createElement("option");
-      option.value = art.nombre;
-      datalist.appendChild(option);
+    window.articulosFiltrados = filtrados; // Guardamos para validación posterior
+
+   filtrados.forEach(art => {
+    const option = document.createElement("option");
+    option.value = art.nombre;
+    datalist.appendChild(option);
     });
+
+
   } catch (err) {
     console.error("❌ Error al buscar artículos:", err);
   }
@@ -153,6 +164,20 @@ document.getElementById("categoria").addEventListener("change", () => {
 });
 
 document.getElementById("nombreArticulo").addEventListener("input", cargarArticulosLive);
+
+document.getElementById("nombreArticulo").addEventListener("change", () => {
+  const seleccion = document.getElementById("nombreArticulo").value.toLowerCase();
+  const articulo = (window.articulosFiltrados || []).find(a => a.nombre.toLowerCase() === seleccion);
+  const info = document.getElementById("infoCantidad");
+
+  if (articulo) {
+    info.textContent = `Disponible: ${articulo.cantidad} unidades`;
+    window.articuloSeleccionado = articulo; // lo usamos después para validar cantidad
+  } else {
+    info.textContent = "";
+    window.articuloSeleccionado = null;
+  }
+});
 
 
   </script>

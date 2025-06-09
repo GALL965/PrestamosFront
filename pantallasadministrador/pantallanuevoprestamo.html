@@ -20,7 +20,9 @@
     <h2>Agregar Préstamo</h2>
 
     <div class="buscador">
-      <input type="text" id="buscarAlumno" placeholder="Buscar alumno...">
+       <input list="listaAlumnos" id="buscarAlumno" placeholder="Buscar alumno...">
+       <datalist id="listaAlumnos"></datalist>
+
     </div>
 
     <select id="categoria">
@@ -28,7 +30,9 @@
       <option value="Artistico">Artístico</option>
       <option value="Deportivo">Deportivo</option>
     </select>
-    <input type="text" id="nombreArticulo" placeholder="Buscar artículo...">
+    <input list="listaArticulos" id="nombreArticulo" placeholder="Buscar artículo...">
+    <datalist id="listaArticulos"></datalist>
+
     <input type="number" id="cantidad" placeholder="Cantidad">
     <input type="date" id="fecha">
     <input type="text" id="horaInicio" placeholder="Horario de préstamo">
@@ -79,6 +83,55 @@
     function irAlInicio() {
       window.location.href = "inicio.html";
     }
+
+
+   async function cargarAlumnos() {
+  try {
+    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios");
+    const alumnos = await res.json();
+    const datalist = document.getElementById("listaAlumnos");
+
+    alumnos
+      .filter(a => a.rol === "Estudiante")
+      .forEach(alumno => {
+        const option = document.createElement("option");
+        option.value = alumno.nombre;
+        datalist.appendChild(option);
+      });
+  } catch (err) {
+    console.error("Error al cargar alumnos:", err);
+  }
+}
+
+cargarAlumnos();
+
+async function cargarArticulosPorCategoria() {
+  const categoria = document.getElementById("categoria").value;
+  const idAdmin = localStorage.getItem("idAdmin");
+  const datalist = document.getElementById("listaArticulos");
+
+  datalist.innerHTML = "";
+
+  if (!categoria || !idAdmin) return;
+
+  try {
+    const res = await fetch(`https://prestamosback-zfcp.onrender.com/api/articulos/por-admin/${idAdmin}?categoria=${categoria}`);
+    const articulos = await res.json();
+
+    articulos.forEach(art => {
+      const option = document.createElement("option");
+      option.value = art.nombre;
+      datalist.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Error al cargar artículos:", err);
+  }
+}
+
+
+document.getElementById("categoria").addEventListener("change", cargarArticulosPorCategoria);
+
+
   </script>
 </body>
 

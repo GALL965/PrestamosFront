@@ -59,34 +59,86 @@
       document.getElementById("nombreAdmin").textContent = nombre;
     }
 
-    function agregarPrestamo() {
-      const alumno = document.getElementById("buscarAlumno").value;
-      const categoria = document.getElementById("categoria").value;
-      const articulo = document.getElementById("nombreArticulo").value;
-      const cantidad = document.getElementById("cantidad").value;
-      const fecha = document.getElementById("fecha").value;
-      const horaInicio = document.getElementById("horaInicio").value;
-      const horaFin = document.getElementById("horaFin").value;
+    async function agregarPrestamo() {
+  const nombreAlumno = document.getElementById("buscarAlumno").value.trim();
+  const categoria = document.getElementById("categoria").value;
+  const nombreArticulo = document.getElementById("nombreArticulo").value.trim();
+  const cantidad = parseInt(document.getElementById("cantidad").value);
+  const fecha = document.getElementById("fecha").value;
+  const horaInicio = document.getElementById("horaInicio").value;
+  const horaFin = document.getElementById("horaFin").value;
+  const idAdmin = localStorage.getItem("idAdmin") || localStorage.getItem("idUsuario");
 
-       if (window.articuloSeleccionado && parseInt(cantidad) > window.articuloSeleccionado.cantidad) {
-        alert(`❌ Solo hay ${window.articuloSeleccionado.cantidad} unidades disponibles.`);
-       return;
-       } 
+  if (!nombreAlumno || !categoria || !nombreArticulo || !cantidad || !fecha || !horaInicio || !horaFin) {
+    alert("❌ Por favor completa todos los campos.");
+    return;
+  }
 
+  // Verificación de stock
+  if (window.articuloSeleccionado && cantidad > window.articuloSeleccionado.cantidad) {
+    alert(`❌ Solo hay ${window.articuloSeleccionado.cantidad} unidades disponibles.`);
+    return;
+  }
 
-      if (alumno && categoria && articulo && cantidad && fecha && horaInicio && horaFin) {
-        alert("Préstamo agregado correctamente.");
-        document.getElementById("buscarAlumno").value = "";
-        document.getElementById("categoria").value = "Academico";
-        document.getElementById("nombreArticulo").value = "";
-        document.getElementById("cantidad").value = "";
-        document.getElementById("fecha").value = "";
-        document.getElementById("horaInicio").value = "";
-        document.getElementById("horaFin").value = "";
-      } else {
-        alert("Por favor completa todos los campos.");
-      }
+  try {
+    // Buscar alumno
+    const resAlumnos = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios");
+    const alumnos = await resAlumnos.json();
+    const alumno = alumnos.find(a => a.nombre.toLowerCase() === nombreAlumno.toLowerCase());
+
+    if (!alumno) {
+      alert("❌ Alumno no encontrado.");
+      return;
     }
+
+    // Buscar artículo
+    const articulo = (window.articuloSeleccionado || null);
+    if (!articulo) {
+      alert("❌ Artículo no seleccionado.");
+      return;
+    }
+
+    const body = {
+      id_admin: idAdmin,
+      id_alumno: alumno.id_usuario,
+      id_articulo: articulo.id_articulo,
+      cantidad,
+      fecha,
+      hora_inicio: horaInicio,
+      hora_fin: horaFin
+    };
+
+    console.log("📦 Enviando al backend:", body);
+
+    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/prestamos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Préstamo agregado correctamente.");
+
+      // Limpiar formulario
+      document.getElementById("buscarAlumno").value = "";
+      document.getElementById("categoria").value = "Académicos";
+      document.getElementById("nombreArticulo").value = "";
+      document.getElementById("cantidad").value = "";
+      document.getElementById("fecha").value = "";
+      document.getElementById("horaInicio").value = "";
+      document.getElementById("horaFin").value = "";
+      document.getElementById("infoCantidad").textContent = "";
+    } else {
+      alert("❌ Error en el registro: " + data.error);
+    }
+  } catch (err) {
+    console.error("❌ Error al registrar préstamo:", err);
+    alert("❌ Error de conexión al servidor.");
+  }
+}
+    
 
     function irAlInicio() {
       window.location.href = "inicio.html";

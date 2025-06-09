@@ -109,7 +109,7 @@ cargarAlumnos();
 async function cargarArticulosLive() {
   const input = document.getElementById("nombreArticulo").value.trim().toLowerCase();
   const categoria = document.getElementById("categoria").value;
-  const idAdmin = localStorage.getItem("idAdmin");
+  const idAdmin = localStorage.getItem("idAdmin") || localStorage.getItem("idUsuario");
   const datalist = document.getElementById("listaArticulos");
 
   console.log("🟢 Buscar artículo:", input, "| Categoría:", categoria, "| idAdmin:", idAdmin);

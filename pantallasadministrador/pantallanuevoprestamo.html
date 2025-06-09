@@ -105,31 +105,38 @@
 
 cargarAlumnos();
 
-async function cargarArticulosPorCategoria() {
+async function cargarArticulosLive() {
+  const input = document.getElementById("nombreArticulo").value.trim().toLowerCase();
   const categoria = document.getElementById("categoria").value;
   const idAdmin = localStorage.getItem("idAdmin");
   const datalist = document.getElementById("listaArticulos");
 
   datalist.innerHTML = "";
 
-  if (!categoria || !idAdmin) return;
+  if (input.length < 2 || !categoria || !idAdmin) return;
 
   try {
-    const res = await fetch(`https://prestamosback-zfcp.onrender.com/api/articulos/por-admin/${idAdmin}?categoria=${categoria}`);
+    const url = `https://prestamosback-zfcp.onrender.com/api/articulos/por-admin/${idAdmin}?categoria=${categoria}`;
+    const res = await fetch(url);
     const articulos = await res.json();
 
-    articulos.forEach(art => {
+    const filtrados = articulos.filter(art =>
+      art.nombre.toLowerCase().startsWith(input)
+    );
+
+    filtrados.forEach(art => {
       const option = document.createElement("option");
       option.value = art.nombre;
       datalist.appendChild(option);
     });
   } catch (err) {
-    console.error("Error al cargar artículos:", err);
+    console.error("Error al buscar artículos:", err);
   }
 }
 
 
 document.getElementById("categoria").addEventListener("change", cargarArticulosPorCategoria);
+document.getElementById("nombreArticulo").addEventListener("input", cargarArticulosLive);
 
 
   </script>

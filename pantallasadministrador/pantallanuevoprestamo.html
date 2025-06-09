@@ -135,7 +135,11 @@ async function cargarArticulosLive() {
 }
 
 
-document.getElementById("categoria").addEventListener("change", cargarArticulosPorCategoria);
+document.getElementById("categoria").addEventListener("change", () => {
+  document.getElementById("nombreArticulo").value = "";
+  document.getElementById("listaArticulos").innerHTML = "";
+});
+
 document.getElementById("nombreArticulo").addEventListener("input", cargarArticulosLive);
 
 

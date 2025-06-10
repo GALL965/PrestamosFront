@@ -55,6 +55,8 @@
   </div>
 
   <script>
+    window.onload = cargarPuntuaciones;
+
     const fotoPerfil = document.getElementById("fotoPerfil");
     const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
     if (imagenPerfil) {
@@ -73,18 +75,35 @@
       mensaje.style.display = mensaje.style.display === "block" ? "none" : "block";
     }
 
-    function agregarPuntuacion() {
-      const nombre = document.getElementById("nombreEstudiante").value;
-      const puntuacion = document.getElementById("puntuacion").value;
-      const observaciones = document.getElementById("observaciones").value;
+ async function agregarPuntuacion() {
+  const nombre = document.getElementById("nombreEstudiante").value;
+  const puntuacion = document.getElementById("puntuacion").value;
+  const observaciones = document.getElementById("observaciones").value;
 
-      if (nombre && puntuacion) {
-        puntuaciones.push({ nombre, puntuacion, observaciones });
-        document.getElementById("nombreEstudiante").value = "";
-        document.getElementById("observaciones").value = "";
-        actualizarTabla();
-      }
+  if (nombre && puntuacion) {
+    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/puntuaciones", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre_estudiante: nombre, puntuacion, observaciones })
+    });
+
+    if (res.ok) {
+      cargarPuntuaciones(); // recarga la tabla
+      document.getElementById("nombreEstudiante").value = "";
+      document.getElementById("observaciones").value = "";
+    } else {
+      alert("Error al agregar puntuación");
     }
+  }
+}
+
+async function cargarPuntuaciones() {
+  const res = await fetch("https://prestamosback-zfcp.onrender.com/api/puntuaciones");
+  const data = await res.json();
+  puntuaciones = data;
+  actualizarTabla();
+}
+
 
     function actualizarTabla() {
       const tbody = document.getElementById("tablaPuntuaciones");
@@ -106,12 +125,14 @@
       actualizarTabla();
     }
 
-    function eliminarTodo() {
-      if (confirm("¿Estás seguro de eliminar todas las puntuaciones?")) {
-        puntuaciones = [];
-        actualizarTabla();
-      }
-    }
+async function eliminarTodo() {
+  if (confirm("¿Estás seguro de eliminar todas las puntuaciones?")) {
+    await fetch("https://prestamosback-zfcp.onrender.com/api/puntuaciones", {
+      method: "DELETE"
+    });
+    cargarPuntuaciones();
+  }
+}
 
     function irAlInicio() {
       window.location.href = "inicio.html";

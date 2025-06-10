@@ -51,64 +51,65 @@
       <img src="../img/iconocasa.png" alt="Inicio" onclick="irAlInicio()" />
     </div>
   </div>
+ 
+<script>
+  const BASE_URL = "https://prestamosback-zfcp.onrender.com"; // porque no se hereda del otro js
 
-  <script>
-    const contenedor = document.getElementById("fotoPerfil");
-    const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
-    if (imagenPerfil) {
-      contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
-    }
-
-    const nombre = localStorage.getItem("nombreAdmin");
-    if (nombre) {
-      document.getElementById("nombreAdmin").textContent = nombre;
-    }
-
-    function confirmarBorrado() {
-      if (confirm("¿Deseas borrar todos los registros del día?")) {
-        document.getElementById("tablaPrestamos").innerHTML = "";
-      }
-    }
-
-    function irAlInicio() {
-      window.location.href = "inicio.html";
-    }
-
-    const idAdmin = localStorage.getItem("idAdmin"); // ya deberías tenerlo guardado al hacer login
-
- async function cargarPrestamosDelDia() {
-  try {
-    console.log("🧠 idAdmin en localStorage:", idAdmin);
-    const res = await fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`);
-    if (!res.ok) throw new Error("Error al cargar préstamos");
-    const data = await res.json();
-
-    const tabla = document.getElementById("tablaPrestamos");
-    tabla.innerHTML = "";
-
-    data.forEach(p => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td>${p.nombre_alumno}</td>
-        <td>${p.fecha}</td>
-        <td>${p.hora_inicio}</td>
-        <td>${p.hora_fin}</td>
-        <td>${p.nombre_articulo}</td>
-        <td>${p.cantidad}</td>
-        <td><button onclick="eliminarPrestamo(${p.id_prestamo}, this)">Eliminar</button></td>
-      `;
-      tabla.appendChild(fila);
-    });
-  } catch (err) {
-    console.error("❌ No se pudieron cargar los préstamos del día:", err);
+  const contenedor = document.getElementById("fotoPerfil");
+  const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
+  if (imagenPerfil) {
+    contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
   }
-}
 
+  const nombre = localStorage.getItem("nombreAdmin");
+  if (nombre) {
+    document.getElementById("nombreAdmin").textContent = nombre;
+  }
+
+  function confirmarBorrado() {
+    if (confirm("¿Deseas borrar todos los registros del día?")) {
+      document.getElementById("tablaPrestamos").innerHTML = "";
+    }
+  }
+
+  function irAlInicio() {
+    window.location.href = "menuadministrador.html"; // CORREGIDO
+  }
+
+  const idAdmin = localStorage.getItem("idAdmin");
+
+  async function cargarPrestamosDelDia() {
+    try {
+      console.log("🧠 idAdmin en localStorage:", idAdmin);
+      const res = await fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`);
+      if (!res.ok) throw new Error("Error al cargar préstamos");
+      const data = await res.json();
+
+      const tabla = document.getElementById("tablaPrestamos");
+      tabla.innerHTML = "";
+
+      data.forEach(p => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${p.nombre_alumno}</td>
+          <td>${p.fecha}</td>
+          <td>${p.hora_inicio}</td>
+          <td>${p.hora_fin}</td>
+          <td>${p.nombre_articulo}</td>
+          <td>${p.cantidad}</td>
+          <td><button onclick="eliminarPrestamo(${p.id_prestamo}, this)">Eliminar</button></td>
+        `;
+        tabla.appendChild(fila);
+      });
+    } catch (err) {
+      console.error("❌ No se pudieron cargar los préstamos del día:", err);
+    }
+  }
 
   async function eliminarPrestamo(id, boton) {
     if (!confirm("¿Eliminar este préstamo?")) return;
 
-    const res = await fetch(`http://localhost:3000/api/prestamos/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/prestamos/${id}`, {
       method: "DELETE"
     });
 
@@ -120,7 +121,9 @@
   }
 
   cargarPrestamosDelDia();
-  </script>
+</script>
+
+
 </body>
 
 </html>

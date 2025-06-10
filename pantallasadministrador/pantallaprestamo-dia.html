@@ -55,11 +55,25 @@
     document.getElementById("nombreAdmin").textContent = nombre;
   }
 
-  function confirmarBorrado() {
-    if (confirm("¿Deseas borrar todos los registros del día?")) {
+function confirmarBorrado() {
+  if (!confirm("¿Deseas borrar todos los registros del día?")) return;
+
+  fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`, {
+    method: "DELETE"
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al borrar");
+      return res.json();
+    })
+    .then(data => {
+      alert("✅ Registros eliminados del backend");
       document.getElementById("tablaPrestamos").innerHTML = "";
-    }
-  }
+    })
+    .catch(err => {
+      console.error("❌ Error al borrar todo:", err);
+      alert("❌ No se pudieron eliminar los registros");
+    });
+}
 
   function irAlInicio() {
     window.location.href = "menuadministrador.html";

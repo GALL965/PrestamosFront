@@ -24,7 +24,9 @@
 
     <h2>Puntuación Estudiantes</h2>
 
-    <input type="text" id="nombreEstudiante" placeholder="Nombre del estudiante">
+    <input type="text" id="nombreEstudiante" placeholder="Nombre del estudiante" list="listaEstudiantes">
+    <datalist id="listaEstudiantes"></datalist>
+
     <select id="puntuacion">
       <option value="1">1 estrella</option>
       <option value="2">2 estrellas</option>
@@ -55,6 +57,30 @@
   </div>
 
   <script>
+    let estudiantes = [];
+let estudianteSeleccionado = null;
+
+async function cargarEstudiantes() {
+  const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/estudiantes");
+  estudiantes = await res.json();
+
+  const lista = document.getElementById("listaEstudiantes");
+  lista.innerHTML = "";
+  estudiantes.forEach(est => {
+    const option = document.createElement("option");
+    option.value = est.nombre;
+    option.dataset.id = est.id_usuario;
+    lista.appendChild(option);
+  });
+}
+
+document.getElementById("nombreEstudiante").addEventListener("input", function () {
+  const nombre = this.value;
+  const est = estudiantes.find(e => e.nombre === nombre);
+  estudianteSeleccionado = est ? est.id_usuario : null;
+});
+
+     
     window.onload = cargarPuntuaciones;
 
     const fotoPerfil = document.getElementById("fotoPerfil");
@@ -75,25 +101,33 @@
       mensaje.style.display = mensaje.style.display === "block" ? "none" : "block";
     }
 
- async function agregarPuntuacion() {
+
+async function agregarPuntuacion() {
   const nombre = document.getElementById("nombreEstudiante").value;
   const puntuacion = document.getElementById("puntuacion").value;
   const observaciones = document.getElementById("observaciones").value;
 
-  if (nombre && puntuacion) {
-    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/puntuaciones", {
+  if (nombre && puntuacion && estudianteSeleccionado) {
+    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/estudiantes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre_estudiante: nombre, puntuacion, observaciones })
+      body: JSON.stringify({
+        id_estudiante: estudianteSeleccionado,
+        puntuacion,
+        observaciones
+      })
     });
 
     if (res.ok) {
-      cargarPuntuaciones(); // recarga la tabla
+      cargarPuntuaciones();
       document.getElementById("nombreEstudiante").value = "";
       document.getElementById("observaciones").value = "";
+      estudianteSeleccionado = null;
     } else {
       alert("Error al agregar puntuación");
     }
+  } else {
+    alert("Selecciona un estudiante válido");
   }
 }
 
@@ -137,6 +171,12 @@ async function eliminarTodo() {
     function irAlInicio() {
       window.location.href = "inicio.html";
     }
+
+window.onload = () => {
+  cargarPuntuaciones();
+  cargarEstudiantes();
+};
+
   </script>
 </body>
 

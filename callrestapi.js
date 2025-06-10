@@ -123,6 +123,7 @@ window.loginAdministrador = async function () {
     });
 
     const data = await res.json();
+    console.log("🔐 Respuesta login admin (raw):", data);
     console.log("🔐 Respuesta login admin:", data);
       if (res.ok && data.rol === "administrador") {
   localStorage.setItem("idAdmin", data.id_usuario);

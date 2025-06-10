@@ -33,15 +33,6 @@
         </tr>
       </thead>
       <tbody id="tablaPrestamos">
-        <tr>
-          <td>Pedro R.</td>
-          <td>27/04/2025</td>
-          <td>11:00-12:00</td>
-          <td>12:00-12:30</td>
-          <td>Balón</td>
-          <td>2</td>
-          <td><button class="btn-eliminar">Eliminar</button></td>
-        </tr>
       </tbody>
     </table>
 
@@ -53,7 +44,6 @@
   </div>
  
 <script>
-
   const contenedor = document.getElementById("fotoPerfil");
   const imagenPerfil = localStorage.getItem("fotoPerfilAdmin");
   if (imagenPerfil) {
@@ -72,15 +62,15 @@
   }
 
   function irAlInicio() {
-    window.location.href = "menuadministrador.html"; // CORREGIDO
+    window.location.href = "menuadministrador.html";
   }
 
-     const idAdmin = localStorage.getItem("idAdmin") || localStorage.getItem("idUsuario");
-
+  const idAdmin = localStorage.getItem("idAdmin") || localStorage.getItem("idUsuario");
 
   async function cargarPrestamosDelDia() {
     try {
       console.log("🧠 idAdmin en localStorage:", idAdmin);
+
       const res = await fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`);
       if (!res.ok) throw new Error("Error al cargar préstamos");
       const data = await res.json();
@@ -91,12 +81,12 @@
       data.forEach(p => {
         const fila = document.createElement("tr");
         fila.innerHTML = `
-          <td>${p.nombre_alumno}</td>
-          <td>${p.fecha}</td>
-          <td>${p.hora_inicio}</td>
-          <td>${p.hora_fin}</td>
-          <td>${p.nombre_articulo}</td>
-          <td>${p.cantidad}</td>
+          <td>${p.nombre_alumno || "Desconocido"}</td>
+          <td>${p.fecha || "-"}</td>
+          <td>${p.hora_inicio || "-"}</td>
+          <td>${p.hora_fin || "-"}</td>
+          <td>${p.nombre_articulo || "Desconocido"}</td>
+          <td>${p.cantidad || "?"}</td>
           <td><button onclick="eliminarPrestamo(${p.id_prestamo}, this)">Eliminar</button></td>
         `;
         tabla.appendChild(fila);
@@ -109,14 +99,19 @@
   async function eliminarPrestamo(id, boton) {
     if (!confirm("¿Eliminar este préstamo?")) return;
 
-    const res = await fetch(`${BASE_URL}/api/prestamos/${id}`, {
-      method: "DELETE"
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/api/prestamos/${id}`, {
+        method: "DELETE"
+      });
 
-    if (res.ok) {
-      boton.closest("tr").remove();
-    } else {
-      alert("Error al eliminar el préstamo.");
+      if (res.ok) {
+        boton.closest("tr").remove();
+      } else {
+        alert("Error al eliminar el préstamo.");
+      }
+    } catch (err) {
+      console.error("❌ Error en eliminarPrestamo:", err);
+      alert("Error de red al intentar eliminar.");
     }
   }
 

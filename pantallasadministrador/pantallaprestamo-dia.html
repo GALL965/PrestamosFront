@@ -78,6 +78,7 @@
 
  async function cargarPrestamosDelDia() {
   try {
+    console.log("🧠 idAdmin en localStorage:", idAdmin);
     const res = await fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`);
     if (!res.ok) throw new Error("Error al cargar préstamos");
     const data = await res.json();

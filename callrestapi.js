@@ -124,13 +124,14 @@ window.loginAdministrador = async function () {
 
     const data = await res.json();
     console.log("🔐 Respuesta login admin:", data);
-
-    if (res.ok && data.rol === "administrador") {
-      localStorage.setItem("idAdmin", data.id);
-      localStorage.setItem("nombreAdmin", data.nombre);
-      localStorage.setItem("fotoPerfilAdmin", data.foto || "");
-      window.location.href = "../pantallasadministrador/menuadministrador.html";
-    } else {
+      if (res.ok && data.rol === "administrador") {
+  localStorage.setItem("idAdmin", data.id_usuario);
+  localStorage.setItem("nombreAdmin", data.nombre);
+  localStorage.setItem("fotoPerfilAdmin", data.foto || "");
+  window.location.href = "../pantallasadministrador/menuadministrador.html";
+}
+    
+ else {
       alert("❌ Credenciales incorrectas o no eres administrador");
     }
   } catch (err) {

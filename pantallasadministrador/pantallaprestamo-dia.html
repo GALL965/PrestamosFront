@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Préstamos-Día</title>
   <link rel="stylesheet" href="../styles.css/styles.css">
+  <script src="../callrestapi.js"></script>
+
 </head>
 
 <body>
@@ -74,8 +76,10 @@
 
     const idAdmin = localStorage.getItem("idAdmin"); // ya deberías tenerlo guardado al hacer login
 
-  async function cargarPrestamosDelDia() {
-    const res = await fetch(`http://localhost:3000/api/prestamos/dia/${idAdmin}`);
+ async function cargarPrestamosDelDia() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/prestamos/dia/${idAdmin}`);
+    if (!res.ok) throw new Error("Error al cargar préstamos");
     const data = await res.json();
 
     const tabla = document.getElementById("tablaPrestamos");
@@ -94,6 +98,11 @@
       `;
       tabla.appendChild(fila);
     });
+  } catch (err) {
+    console.error("❌ No se pudieron cargar los préstamos del día:", err);
+  }
+}
+
   }
 
   async function eliminarPrestamo(id, boton) {

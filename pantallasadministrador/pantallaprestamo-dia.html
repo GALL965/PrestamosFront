@@ -75,7 +75,8 @@
     window.location.href = "menuadministrador.html"; // CORREGIDO
   }
 
-  const idAdmin = localStorage.getItem("idAdmin");
+     const idAdmin = localStorage.getItem("idAdmin") || localStorage.getItem("idUsuario");
+
 
   async function cargarPrestamosDelDia() {
     try {

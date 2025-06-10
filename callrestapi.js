@@ -125,7 +125,7 @@ window.loginAdministrador = async function () {
     const data = await res.json();
     console.log("🔐 Respuesta login admin (raw):", data);
     console.log("🔐 Respuesta login admin:", data);
-      if (res.ok && data.rol === "administrador") {
+     if (res.ok && (data.rol === "administrador" || data.rol === "Proveedor")) {
   localStorage.setItem("idAdmin", data.id_usuario);
   localStorage.setItem("nombreAdmin", data.nombre);
   localStorage.setItem("fotoPerfilAdmin", data.foto || "");

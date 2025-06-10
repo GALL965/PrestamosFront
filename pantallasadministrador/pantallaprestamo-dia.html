@@ -71,6 +71,46 @@
     function irAlInicio() {
       window.location.href = "inicio.html";
     }
+
+    const idAdmin = localStorage.getItem("idAdmin"); // ya deberías tenerlo guardado al hacer login
+
+  async function cargarPrestamosDelDia() {
+    const res = await fetch(`http://localhost:3000/api/prestamos/dia/${idAdmin}`);
+    const data = await res.json();
+
+    const tabla = document.getElementById("tablaPrestamos");
+    tabla.innerHTML = "";
+
+    data.forEach(p => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${p.nombre_alumno}</td>
+        <td>${p.fecha}</td>
+        <td>${p.hora_inicio}</td>
+        <td>${p.hora_fin}</td>
+        <td>${p.nombre_articulo}</td>
+        <td>${p.cantidad}</td>
+        <td><button onclick="eliminarPrestamo(${p.id_prestamo}, this)">Eliminar</button></td>
+      `;
+      tabla.appendChild(fila);
+    });
+  }
+
+  async function eliminarPrestamo(id, boton) {
+    if (!confirm("¿Eliminar este préstamo?")) return;
+
+    const res = await fetch(`http://localhost:3000/api/prestamos/${id}`, {
+      method: "DELETE"
+    });
+
+    if (res.ok) {
+      boton.closest("tr").remove();
+    } else {
+      alert("Error al eliminar el préstamo.");
+    }
+  }
+
+  cargarPrestamosDelDia();
   </script>
 </body>
 

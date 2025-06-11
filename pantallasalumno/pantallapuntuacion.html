@@ -38,48 +38,50 @@
     </div>
   </div>
 
-  <script>
-    const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
-    const contenedor = document.getElementById("fotoPerfil");
-    const tabla = document.getElementById("tablaPuntuacion");
-    const mensajeRestriccion = document.getElementById("mensajeRestriccion");
+<script>
+  const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+  const contenedor = document.getElementById("fotoPerfil");
+  const tabla = document.getElementById("tablaPuntuacion");
+  const mensajeRestriccion = document.getElementById("mensajeRestriccion");
 
-    if (alumno?.foto) {
-      contenedor.style.backgroundImage = `url('${alumno.foto}')`;
-    }
+  if (alumno?.foto) {
+    contenedor.style.backgroundImage = `url('${alumno.foto}')`;
+  }
 
-    // Evaluaciones simuladas
-    const evaluaciones = [
-      { estrellas: 1, observacion: "No entregó a tiempo", fecha: "2025-05-27" },
-      { estrellas: 1, observacion: "Mal uso del artículo", fecha: "2025-05-29" },
-      { estrellas: 1, observacion: "Faltó a la devolución", fecha: "2025-05-30" },
-      { estrellas: 2, observacion: "Entregó tarde", fecha: "2025-05-20" },
-      { estrellas: 3, observacion: "Entregó justo", fecha: "2025-05-18" },
-      { estrellas: 4, observacion: "Buen comportamiento", fecha: "2025-05-10" }
-    ];
+  if (alumno?.nombre) {
+    document.getElementById("nombreAlumno").textContent = alumno.nombre;
+  }
 
-    // Mostrar en tabla
+  async function cargarPuntuaciones() {
+    const res = await fetch(`https://prestamosback-zfcp.onrender.com/api/puntuaciones/${alumno.id_usuario}`);
+    const evaluaciones = await res.json();
+
     tabla.innerHTML = "";
     evaluaciones.forEach(e => {
+      const fecha = new Date(e.fecha).toISOString().slice(0, 10);
       tabla.innerHTML += `
         <tr>
-          <td>${"⭐".repeat(e.estrellas)}</td>
-          <td>${e.observacion}</td>
-          <td>${e.fecha}</td>
+          <td>${"⭐".repeat(e.puntuacion)}</td>
+          <td>${e.observaciones || "Sin observación"}</td>
+          <td>${fecha}</td>
         </tr>
       `;
     });
 
-    // Verificación de restricciones
-    const hoy = new Date("2025-05-31"); // Simulado para pruebas
+    verificarRestriccion(evaluaciones);
+  }
+
+  function verificarRestriccion(evaluaciones) {
+    const hoy = new Date();
     const evalsPorEstrella = [0, [], [], [], [], []];
 
     evaluaciones.forEach(e => {
       const fechaEval = new Date(e.fecha);
-      const diasDiferencia = (hoy - fechaEval) / (1000 * 60 * 60 * 24);
-      if (e.estrellas === 1 && diasDiferencia <= 7) evalsPorEstrella[1].push(e);
-      if (e.estrellas === 2 && diasDiferencia <= 7) evalsPorEstrella[2].push(e);
-      if (e.estrellas === 3 && diasDiferencia <= 14) evalsPorEstrella[3].push(e);
+      const dias = (hoy - fechaEval) / (1000 * 60 * 60 * 24);
+
+      if (e.puntuacion === 1 && dias <= 7) evalsPorEstrella[1].push(e);
+      if (e.puntuacion === 2 && dias <= 7) evalsPorEstrella[2].push(e);
+      if (e.puntuacion === 3 && dias <= 14) evalsPorEstrella[3].push(e);
     });
 
     if (evalsPorEstrella[1].length >= 3) {
@@ -89,7 +91,11 @@
     } else if (evalsPorEstrella[3].length >= 3) {
       mensajeRestriccion.textContent = "🚫 No puedes solicitar artículos por 24 horas (3 evaluaciones de 3 estrellas en las últimas 2 semanas).";
     }
-  </script>
+  }
+
+  window.onload = cargarPuntuaciones;
+</script>
+
 </body>
 
 </html>

@@ -71,7 +71,6 @@ window.registrarAdministrador = async function () {
   }
 };
 
-// 🔹 Función para login de alumno
 window.loginAlumno = async function () {
   const correo = document.getElementById("correo").value.trim();
   const contrasena = document.getElementById("contrasena").value.trim();
@@ -91,10 +90,8 @@ window.loginAlumno = async function () {
     const data = await res.json();
     console.log("🔐 Respuesta login alumno:", data);
 
-    if (res.ok && data.rol === "Estudiante") {
-      localStorage.setItem("idUsuario", data.id);
-      localStorage.setItem("nombreUsuario", data.nombre);
-      localStorage.setItem("fotoPerfilAlumno", data.foto || "");
+    if (res.ok && data.usuario.rol === "Estudiante") {
+      localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario)); // ✅ GUARDAMOS TODO EL USUARIO
       window.location.href = "../pantallasalumno/menualumno.html";
     } else {
       alert("❌ Credenciales incorrectas o no eres alumno");

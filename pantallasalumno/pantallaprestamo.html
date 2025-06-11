@@ -94,6 +94,18 @@
       alert("Préstamos eliminados. (Simulación)");
       location.reload();
     }
+
+    window.addEventListener("DOMContentLoaded", () => {
+  const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+  if (alumno) {
+    document.getElementById("nombreAlumno").innerText = alumno.nombre;
+    if (alumno.foto) {
+      document.getElementById("fotoPerfil").style.backgroundImage = `url('${alumno.foto}')`;
+    }
+  }
+  obtenerPrestamosAlumno();
+});
+
   </script>
   <div style="text-align: center; margin-top: 20px;">
   <a href="menualumno.html">

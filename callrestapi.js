@@ -179,3 +179,34 @@ window.registrarArticulo = async function () {
     alert("❌ No se pudo conectar al servidor.");
   }
 };
+
+
+window.obtenerPrestamosAlumno = async function () {
+  const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+  if (!alumno) return alert("No se encontró sesión activa");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/prestamos/alumno/${alumno.id_usuario}`);
+    const prestamos = await res.json();
+
+    const tbody = document.getElementById("tablaPrestamos");
+    tbody.innerHTML = ""; // limpia tabla
+
+    prestamos.forEach(p => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${p.nombre_alumno}</td>
+        <td>${p.fecha}</td>
+        <td>${p.hora_inicio}</td>
+        <td>${p.hora_fin}</td>
+        <td>${p.nombre_articulo}</td>
+        <td>${p.cantidad}</td>
+        <td>Activo</td>
+      `;
+      tbody.appendChild(fila);
+    });
+  } catch (err) {
+    console.error("❌ Error al cargar préstamos del alumno:", err);
+    alert("No se pudieron cargar los préstamos.");
+  }
+};

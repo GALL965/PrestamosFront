@@ -55,6 +55,20 @@
         contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
       }
     </script>
+ <script>
+  const imagenPerfil = localStorage.getItem("fotoPerfilAlumno");
+  const contenedor = document.getElementById("fotoPerfil");
+  if (imagenPerfil) {
+    contenedor.style.backgroundImage = `url('${imagenPerfil}')`;
+  }
+
+  const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+  if (alumno?.nombre) {
+    document.getElementById("nombreAlumno").textContent = alumno.nombre;
+  }
+</script>
+
+
 </body>
 
 </html>

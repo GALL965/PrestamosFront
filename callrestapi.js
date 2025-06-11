@@ -210,3 +210,24 @@ window.obtenerPrestamosAlumno = async function () {
     alert("No se pudieron cargar los préstamos.");
   }
 };
+
+
+window.eliminarTodosLosPrestamos = async function () {
+  const alumno = JSON.parse(localStorage.getItem("alumnoLogueado"));
+  if (!alumno) return alert("⚠️ No hay sesión activa");
+
+  if (!confirm("¿Estás seguro de eliminar todos tus préstamos?")) return;
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/prestamos/alumno/${alumno.id_usuario}`, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+    alert(data.mensaje || "Préstamos eliminados");
+    location.reload();
+  } catch (err) {
+    console.error("❌ Error al eliminar préstamos:", err);
+    alert("Error al eliminar los préstamos.");
+  }
+};

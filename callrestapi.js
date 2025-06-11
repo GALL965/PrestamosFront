@@ -1,42 +1,65 @@
 const BASE_URL = "https://prestamosback-zfcp.onrender.com";
 
 // 🔹 Función para registrar alumno
+
 async function registrarAlumno(nombre, correo, contraseña) {
-  const API_URL = `${BASE_URL}/api/usuarios`;
+  const file = document.getElementById("foto-alumno").files[0];
+  let fotoBase64 = "";
 
-console.log("📤 Enviando:", {
-  nombre,
-  correo,
-  matricula: generarMatriculaTemporal(),
-  rol: "Estudiante",
-  contraseña
-});
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = async function (e) {
+      fotoBase64 = e.target.result;
 
-  try {
-    const res = await fetch(API_URL, {
+      const API_URL = `${BASE_URL}/api/usuarios`;
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          correo,
+          matricula: generarMatriculaTemporal(),
+          rol: "Estudiante",
+          contraseña,
+          foto: fotoBase64
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Alumno registrado correctamente");
+        window.location.href = "iniciarseccion.html";
+      } else {
+        alert("❌ Error en el registro: " + JSON.stringify(data));
+      }
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Si no subió imagen, manda vacío
+    const res = await fetch(`${BASE_URL}/api/usuarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        nombre: nombre,
-        correo: correo,
+        nombre,
+        correo,
         matricula: generarMatriculaTemporal(),
         rol: "Estudiante",
-        contraseña: contraseña
+        contraseña,
+        foto: ""
       })
     });
 
     const data = await res.json();
     if (res.ok) {
-      alert("✅ Alumno registrado correctamente, redirigiendo al login...");
+      alert("✅ Alumno registrado correctamente");
       window.location.href = "iniciarseccion.html";
     } else {
       alert("❌ Error en el registro: " + JSON.stringify(data));
     }
-  } catch (err) {
-    alert("❌ Error de conexión al servidor");
-    console.error(err);
   }
 }
+
 
 // 🔹 Generador de matrícula temporal
 function generarMatriculaTemporal() {

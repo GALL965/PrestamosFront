@@ -91,7 +91,8 @@ window.loginAlumno = async function () {
     console.log("🔐 Respuesta login alumno:", data);
 
     if (res.ok && data.usuario.rol === "Estudiante") {
-      localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario)); // ✅ GUARDAMOS TODO EL USUARIO
+      // ✅ GUARDAR TODO EL USUARIO EN UNA SOLA CLAVE
+      localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario));
       window.location.href = "../pantallasalumno/menualumno.html";
     } else {
       alert("❌ Credenciales incorrectas o no eres alumno");

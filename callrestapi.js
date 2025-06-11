@@ -91,11 +91,15 @@ window.loginAlumno = async function () {
     console.log("🔐 Respuesta login alumno:", data);
 
     if (res.ok && data.usuario.rol === "Estudiante") {
-      localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario)); // ✅ ESTO ES LO ÚNICO QUE DEBES USAR
+      localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario));
       window.location.href = "../pantallasalumno/menualumno.html";
     } else {
       alert("❌ Credenciales incorrectas o no eres alumno");
     }
+   const data = await res.json();
+   console.log("🔍 DEBUG loginAlumno:", data);
+
+
   } catch (err) {
     console.error("❌ Error de login alumno:", err);
     alert("❌ No se pudo conectar al servidor");

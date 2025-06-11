@@ -56,6 +56,9 @@ async function iniciarSesion() {
     localStorage.setItem("fotoPerfilAlumno", usuario.foto || "");
     localStorage.setItem("rol", usuario.rol);
 
+    localStorage.setItem("alumnoLogueado", JSON.stringify(usuario));
+
+
     if (usuario.rol === "administrador" || usuario.rol === "Proveedor") {
     window.location.href = "../pantallasadministrador/menuadministrador.html";
     }else if (usuario.rol === "Estudiante") {

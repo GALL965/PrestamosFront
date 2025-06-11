@@ -108,7 +108,7 @@ async function agregarPuntuacion() {
   const observaciones = document.getElementById("observaciones").value;
 
   if (nombre && puntuacion && estudianteSeleccionado) {
-    const res = await fetch("https://prestamosback-zfcp.onrender.com/api/usuarios/estudiantes", {
+     const res = await fetch("https://prestamosback-zfcp.onrender.com/api/puntuaciones", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

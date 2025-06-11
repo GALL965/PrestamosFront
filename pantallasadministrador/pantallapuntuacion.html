@@ -139,20 +139,22 @@ async function cargarPuntuaciones() {
 }
 
 
-    function actualizarTabla() {
-      const tbody = document.getElementById("tablaPuntuaciones");
-      tbody.innerHTML = "";
-      puntuaciones.forEach((item, index) => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td>${item.nombre}</td>
-          <td>${'⭐'.repeat(item.puntuacion)}</td>
-          <td>${item.observaciones}</td>
-          <td><button class="btn-eliminar" onclick="eliminarPuntuacion(${index})">Eliminar</button></td>
-        `;
-        tbody.appendChild(fila);
-      });
-    }
+function actualizarTabla() {
+  const tbody = document.getElementById("tablaPuntuaciones");
+  tbody.innerHTML = "";
+
+  puntuaciones.forEach((item, index) => {
+    const nombre = item.Usuario ? item.Usuario.nombre : "Sin nombre";
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${nombre}</td>
+      <td>${'⭐'.repeat(item.puntuacion)}</td>
+      <td>${item.observaciones}</td>
+      <td><button class="btn-eliminar" onclick="eliminarPuntuacion(${index})">Eliminar</button></td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
 
     function eliminarPuntuacion(index) {
       puntuaciones.splice(index, 1);

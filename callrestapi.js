@@ -88,17 +88,20 @@ window.loginAlumno = async function () {
     });
 
     const data = await res.json();
-    console.log("🔐 Respuesta login alumno:", data);
+    console.log("🔍 DEBUG loginAlumno:", data);
 
-    if (res.ok && data.usuario.rol === "Estudiante") {
+    // Verifica si la respuesta tiene data.usuario o data plano
+    if (res.ok && data.usuario?.rol === "Estudiante") {
       localStorage.setItem("alumnoLogueado", JSON.stringify(data.usuario));
       window.location.href = "../pantallasalumno/menualumno.html";
+
+    } else if (res.ok && data.rol === "Estudiante") {
+      localStorage.setItem("alumnoLogueado", JSON.stringify(data));
+      window.location.href = "../pantallasalumno/menualumno.html";
+
     } else {
       alert("❌ Credenciales incorrectas o no eres alumno");
     }
-   const data = await res.json();
-   console.log("🔍 DEBUG loginAlumno:", data);
-
 
   } catch (err) {
     console.error("❌ Error de login alumno:", err);
